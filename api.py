@@ -2,8 +2,6 @@ import datetime
 
 from flask import Flask, render_template
 from flask_restful import Resource, Api, reqparse, fields, marshal_with
-import http.client, urllib.request, urllib.parse, urllib.error, base64
-import requests
 
 from models.Fati import Fati
 
