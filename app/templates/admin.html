@@ -25,7 +25,7 @@
     <style>
         .column {
             float: left;
-            width: 33%;
+            width: 30%;
             padding: 10px;
             heigth: 300px;
         }
@@ -54,7 +54,7 @@
                 <div class="header-content mx-auto">
                     <h1 class="mb-5">
 
-                        <form>
+                        <form action="/commit_config" method="post">
 
                         <div class="column">
                             <input type="datetime-local" name="datetime">
@@ -84,9 +84,8 @@
                             <input type="checkbox" name="valve6" value="6">Valve 6<br>
                             <input type="checkbox" name="valve7" value="7">Valve 7<br>
                             <input type="checkbox" name="valve8" value="8">Valve 8<br>
-                            <button type="button" onclick="alert('Commiting to db')">Commit</button>
                         </div>
-
+                        <input type="submit" value="Commit">
                         </form>
 
                     </h1>
