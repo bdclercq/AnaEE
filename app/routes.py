@@ -96,8 +96,10 @@ def commit_config():
         for f in fatis:
             config[f] = valvebyte
         print(config)
-        vc = ValveConfiguration(timestamp=timestamp, status=config)
-        db.session.add(vc)
-        db.session.commit()
+        exists = db.session.query(ValveConfiguration.timestamp).filter_by(timestamp=timestamp).scalar() is not None
+        if not exists:
+            vc = ValveConfiguration(timestamp=timestamp, status=config)
+            db.session.add(vc)
+            db.session.commit()
         print(ValveConfiguration.query.all())
     return redirect("/")
