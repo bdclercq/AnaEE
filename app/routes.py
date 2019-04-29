@@ -6,7 +6,7 @@ import datetime
 
 @app.route('/')
 def home():
-    return render_template('admin.html')
+    return render_template('basic_new.html')
 
 
 @app.route('/commit_config', methods=['POST', 'GET'])
