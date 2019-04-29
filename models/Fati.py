@@ -1,7 +1,13 @@
 from models.valve import Valve
+import db
+from sqlalchemy.sql import func
 
+class Fati(db.Model):
 
-class Fati:
+    __tablename__ = "fatis"
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    number = db.Column(db.Integer, nullable=False)
+    name = db.Column(db.String(125), nullable=False)
 
     def __init__(self, name, number):
         self.number = number
