@@ -8,7 +8,7 @@ class ValveConfiguration(db.Model):
     status = db.Column(db.BLOB, nullable=False)
 
     def __repr__(self):
-        return 'Valve {0} has status {1} at {2}'.format(self.id, self.status, self.timestamp)
+        return 'Configuration at {0}: {1}'.format(self.timestamp, self.status)
 
 # Voor parsen: statussen moeten per timestamp komen
 # BLOB == bytearray(16)

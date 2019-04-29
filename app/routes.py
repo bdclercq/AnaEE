@@ -1,5 +1,7 @@
 from flask import render_template, request, redirect
-from app import app
+from app import app, db
+from app.models import ValveConfiguration
+import datetime
 
 
 @app.route('/')
@@ -12,46 +14,90 @@ def commit_config():
     if request.method == 'POST':
         result = request.form
         timestamp = result['datetime']
+        year = int(timestamp[0:4])
+        month = int(timestamp[5:7])
+        day = int(timestamp[8:10])
+        date = datetime.date(year, month, day)
+        hour = int(timestamp[11:13])
+        minute = int(timestamp[14:16])
+        second = int(timestamp[17:])
+        time = datetime.time(hour, minute, second)
+        timestamp = datetime.datetime.combine(date, time)
+        config = bytearray(16)
         print(timestamp)
+        ##############################
+        fatis = []
         if 'fati1' in result:
-            print(1)
+            fatis.append(1)
+
         if 'fati2' in result:
-            print(2)
+            fatis.append(2)
+
         if 'fati3' in result:
-            print(3)
+            fatis.append(3)
+
         if 'fati4' in result:
-            print(4)
+            fatis.append(4)
+
         if 'fati5' in result:
-            print("fati 5 found")
+            fatis.append(5)
+
         if 'fati6' in result:
-            print("fati 6 found")
+            fatis.append(6)
+
         if 'fati7' in result:
-            print(7)
+            fatis.append(7)
+
         if 'fati8' in result:
-            print(8)
+            fatis.append(8)
+
         if 'fati9' in result:
-            print(9)
+            fatis.append(9)
+
         if 'fati10' in result:
-            print(10)
+            fatis.append(10)
+
         if 'fati11' in result:
-            print("fati 11 found")
+            fatis.append(11)
+
         if 'fati12' in result:
-            print("fati 12 found")
+            fatis.append(12)
+
+        ##############################
+        valvebyte = 0
         if 'valve1' in result:
-            print("valve 1 found")
+            valvebyte = valvebyte | 1
+
         if 'valve2' in result:
-            print("valve 2 found")
+            valvebyte = valvebyte | 2
+
         if 'valve3' in result:
-            print("valve 3 found")
+            valvebyte = valvebyte | 4
+
         if 'valve4' in result:
-            print("valve 4 found")
+            valvebyte = valvebyte | 8
+
         if 'valve5' in result:
-            print("valve 5 found")
+            valvebyte = valvebyte | 16
+
         if 'valve6' in result:
-            print("valve 6 found")
+            valvebyte = valvebyte | 32
+
         if 'valve7' in result:
-            print("valve 7 found")
+            valvebyte = valvebyte | 64
+
         if 'valve8' in result:
-            print("valve 8 found")
-        print(result)
+            valvebyte = valvebyte | 128
+
+        ##############################
+
+
+        print(valvebyte)
+        for f in fatis:
+            config[f] = valvebyte
+        print(config)
+        vc = ValveConfiguration(timestamp=timestamp, status=config)
+        db.session.add(vc)
+        db.session.commit()
+        print(ValveConfiguration.query.all())
     return redirect("/")
