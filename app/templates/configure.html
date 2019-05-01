@@ -97,16 +97,45 @@
 
             </div>
             <!-- /.container-fluid -->
+            {% if  timestamp %}
+                Configuring for {{ timestamp }}
+            <form action="/commit_config/{{ timestamp }}" method="post">
+                <div class="row">
+                        {% if data %}
+{#                    {{ data }}#}
+                            Previous data found
+                        {% else %}
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <input type="checkbox" name="fati1" value="1">Fati 1<br>
+                        <input type="checkbox" name="fati2" value="2">Fati 2<br>
+                        <input type="checkbox" name="fati3" value="3">Fati 3<br>
+                        <input type="checkbox" name="fati4" value="4">Fati 4<br>
+                        <input type="checkbox" name="fati5" value="5">Fati 5<br>
+                        <input type="checkbox" name="fati6" value="6">Fati 6<br>
+                        <input type="checkbox" name="fati7" value="7">Fati 7<br>
+                        <input type="checkbox" name="fati8" value="8">Fati 8<br>
+                        <input type="checkbox" name="fati9" value="9">Fati 9<br>
+                        <input type="checkbox" name="fati10" value="10">Fati 10<br>
+                        <input type="checkbox" name="fati11" value="11">Fati 11<br>
+                        <input type="checkbox" name="fati12" value="12">Fati 12<br>
+                    </div>
 
-            <form action="/configure" method="post">
-
-                <div>
-                    <input type="datetime-local" step=1 name="datetime">
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <input type="checkbox" name="valve1" value="1">Valve 1<br>
+                        <input type="checkbox" name="valve2" value="2">Valve 2<br>
+                        <input type="checkbox" name="valve3" value="3">Valve 3<br>
+                        <input type="checkbox" name="valve4" value="4">Valve 4<br>
+                        <input type="checkbox" name="valve5" value="5">Valve 5<br>
+                        <input type="checkbox" name="valve6" value="6">Valve 6<br>
+                        <input type="checkbox" name="valve7" value="7">Valve 7<br>
+                        <input type="checkbox" name="valve8" value="8">Valve 8<br>
+                    </div>
+                        {% endif %}
                 </div>
 
                 <input type="submit" value="Commit">
             </form>
-
+            {% endif %}
         </div>
         <!-- End of Main Content -->
 

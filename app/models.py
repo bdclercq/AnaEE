@@ -9,6 +9,3 @@ class ValveConfiguration(db.Model):
 
     def __repr__(self):
         return 'Configuration at {0}: {1}'.format(self.timestamp, self.status)
-
-# Voor parsen: statussen moeten per timestamp komen
-# BLOB == bytearray(16)
