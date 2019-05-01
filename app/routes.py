@@ -1,8 +1,7 @@
 from flask import render_template, request, redirect
 from app import app, db
 from app.models import ValveConfiguration
-import datetime
-from bitarray import bitarray
+import datetime, random
 
 def convert_timestamp(timestamp):
     year = int(timestamp[0:4])
@@ -28,7 +27,7 @@ def configure():
     exists = db.session.query(ValveConfiguration.timestamp).filter_by(timestamp=timestamp).scalar() is not None
     if exists:
         data = ValveConfiguration.query.filter_by(timestamp=timestamp).first()
-        print(bitarray(data.status))
+        print(data)
         return render_template('configure.html', timestamp=tmstmp, data=data)
     if not exists:
         return render_template('configure.html', timestamp=tmstmp)
@@ -116,13 +115,13 @@ def commit_config(timestamp):
 
         ##############################
 
-        ba = bitarray(96)
-        print(valvebyte)
+        ba = [''.join('0') for v in range(96)]
+        print(ba)
         for f in fatis:
             config[f] = valvebyte
             for v in valves:
-                ba[((f-1)*8)+v] = 1
-        print(config)
+                ba[((f-1)*8)+v] = '1'
+        print(ba)
         exists = db.session.query(ValveConfiguration.timestamp).filter_by(timestamp=timestamp).scalar() is not None
         if not exists:
             vc = ValveConfiguration(timestamp=timestamp, status=ba)
