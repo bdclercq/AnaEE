@@ -1,7 +1,18 @@
 from flask import render_template, request, redirect
 from app import app, db
 from app.models import ValveConfiguration
-import datetime, random
+import datetime
+
+fs = ['fati1', 'fati2', 'fati3', 'fati4', 'fati5', 'fati6', 'fati7', 'fati8',
+              'fati9', 'fati10', 'fati11', 'fati12']
+vs = []
+vn = []
+for i in range(1, 97):
+    name = "valve"
+    name = name+str(i)
+    vs.append(name)
+    vn.append(i)
+
 
 def convert_timestamp(timestamp):
     year = int(timestamp[0:4])
@@ -10,14 +21,22 @@ def convert_timestamp(timestamp):
     date = datetime.date(year, month, day)
     hour = int(timestamp[11:13])
     minute = int(timestamp[14:16])
-    second = int(timestamp[17:])
+    if timestamp[17:] == '':
+        second = 00
+    else:
+        second = int(timestamp[17:])
     time = datetime.time(hour, minute, second)
     timestamp = datetime.datetime.combine(date, time)
     return timestamp
 
 
 def convert_data(data):
-    pass
+    prev_checked = []
+    data = data.status
+    for i in range(1, 97):
+        if data[i-1] == 1:
+            prev_checked.append(i)
+    return prev_checked
 
 
 @app.route('/')
@@ -32,9 +51,10 @@ def configure():
     if exists:
         data = ValveConfiguration.query.filter_by(timestamp=timestamp).first()
         print(data)
-        return render_template('configure.html', timestamp=tmstmp, data=data)
+        numbers = convert_data(data)
+        return render_template('configure.html', timestamp=tmstmp, data=data, nrs=numbers, fatis=fs, valves=vs, valvenumbers=vn)
     if not exists:
-        return render_template('configure.html', timestamp=tmstmp)
+        return render_template('configure.html', timestamp=tmstmp, fatis=fs, valves=vs, valvenumbers=vn)
 
 @app.route('/commit_config/<timestamp>', methods=['POST', 'GET'])
 def commit_config(timestamp):
@@ -42,20 +62,17 @@ def commit_config(timestamp):
         result = request.form
         timestamp = convert_timestamp(timestamp)
         print(timestamp)
+        checked_valves = []
+        for v in vs:
+            if len(result.getlist(v)) > 0:
+                checked_valves.append(int(result.getlist(v)[0]))
         ##############################
-        fs = ['fati1', 'fati2', 'fati3', 'fati4', 'fati5', 'fati6', 'fati7', 'fati8',
-              'fati9', 'fati10', 'fati11', 'fati12']
-        vs = ['valve1', 'valve2', 'valve3', 'valve4', 'valve5', 'valve6', 'valve7', 'valve8']
         bs = ''
-        for f in fs:
-            if f in result:
-                for v in vs:
-                    if v in result:
-                        bs = bs+'1'
-                    else:
-                        bs = bs+'0'
+        for i in range(1, 97):
+            if i in checked_valves:
+                bs = bs+'1'
             else:
-                bs = bs+'00000000'
+                bs = bs+'0'
         ##############################
         print(bs)
         exists = db.session.query(ValveConfiguration.timestamp).filter_by(timestamp=timestamp).scalar() is not None
