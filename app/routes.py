@@ -34,8 +34,10 @@ def convert_data(data):
     prev_checked = []
     data = data.status
     for i in range(1, 97):
-        if data[i-1] == 1:
+        print(data[i-1])
+        if int(data[i-1]) == 1:
             prev_checked.append(i)
+    print(prev_checked)
     return prev_checked
 
 
