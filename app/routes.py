@@ -16,6 +16,10 @@ def convert_timestamp(timestamp):
     return timestamp
 
 
+def convert_data(data):
+    pass
+
+
 @app.route('/')
 def home():
     return render_template('basic_new.html')
@@ -36,96 +40,27 @@ def configure():
 def commit_config(timestamp):
     if request.method == 'POST':
         result = request.form
-        # timestamp = result['datetime']
         timestamp = convert_timestamp(timestamp)
-        config = bytearray(16)
         print(timestamp)
         ##############################
-        fatis = []
-        if 'fati1' in result:
-            fatis.append(1)
-
-        if 'fati2' in result:
-            fatis.append(2)
-
-        if 'fati3' in result:
-            fatis.append(3)
-
-        if 'fati4' in result:
-            fatis.append(4)
-
-        if 'fati5' in result:
-            fatis.append(5)
-
-        if 'fati6' in result:
-            fatis.append(6)
-
-        if 'fati7' in result:
-            fatis.append(7)
-
-        if 'fati8' in result:
-            fatis.append(8)
-
-        if 'fati9' in result:
-            fatis.append(9)
-
-        if 'fati10' in result:
-            fatis.append(10)
-
-        if 'fati11' in result:
-            fatis.append(11)
-
-        if 'fati12' in result:
-            fatis.append(12)
-
+        fs = ['fati1', 'fati2', 'fati3', 'fati4', 'fati5', 'fati6', 'fati7', 'fati8',
+              'fati9', 'fati10', 'fati11', 'fati12']
+        vs = ['valve1', 'valve2', 'valve3', 'valve4', 'valve5', 'valve6', 'valve7', 'valve8']
+        bs = ''
+        for f in fs:
+            if f in result:
+                for v in vs:
+                    if v in result:
+                        bs = bs+'1'
+                    else:
+                        bs = bs+'0'
+            else:
+                bs = bs+'00000000'
         ##############################
-        valvebyte = 0
-        valves = []
-        if 'valve1' in result:
-            valvebyte = valvebyte | 1
-            valves.append(1)
-
-        if 'valve2' in result:
-            valvebyte = valvebyte | 2
-            valves.append(2)
-
-        if 'valve3' in result:
-            valvebyte = valvebyte | 4
-            valves.append(3)
-
-        if 'valve4' in result:
-            valvebyte = valvebyte | 8
-            valves.append(4)
-
-        if 'valve5' in result:
-            valvebyte = valvebyte | 16
-            valves.append(5)
-
-        if 'valve6' in result:
-            valvebyte = valvebyte | 32
-            valves.append(6)
-
-        if 'valve7' in result:
-            valvebyte = valvebyte | 64
-            valves.append(7)
-
-        if 'valve8' in result:
-            valvebyte = valvebyte | 128
-            valves.append(8)
-
-        ##############################
-        ba = ''
-        for i in range(96):
-            ba = ba+'0'
-        print(ba)
-        for f in fatis:
-            config[f] = valvebyte
-            for v in valves:
-                ba = ba[:((f-1)*8)+v]+'1'+ba[((f-1)*8)+v+1:]
-        print(ba)
+        print(bs)
         exists = db.session.query(ValveConfiguration.timestamp).filter_by(timestamp=timestamp).scalar() is not None
         if not exists:
-            vc = ValveConfiguration(timestamp=timestamp, status=ba)
+            vc = ValveConfiguration(timestamp=timestamp, status=bs)
             db.session.add(vc)
             db.session.commit()
         print(ValveConfiguration.query.all())
