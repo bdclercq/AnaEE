@@ -82,5 +82,9 @@ def commit_config(timestamp):
             vc = ValveConfiguration(timestamp=timestamp, status=bs)
             db.session.add(vc)
             db.session.commit()
+        else:
+            config = ValveConfiguration.query.filter_by(timestamp=timestamp).first()
+            config.status = bs
+            db.session.commit()
         print(ValveConfiguration.query.all())
     return redirect("/")
