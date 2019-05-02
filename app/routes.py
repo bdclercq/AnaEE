@@ -114,13 +114,14 @@ def commit_config(timestamp):
             valves.append(8)
 
         ##############################
-
-        ba = [''.join('0') for v in range(96)]
+        ba = ''
+        for i in range(96):
+            ba = ba+'0'
         print(ba)
         for f in fatis:
             config[f] = valvebyte
             for v in valves:
-                ba[((f-1)*8)+v] = '1'
+                ba = ba[:((f-1)*8)+v]+'1'+ba[((f-1)*8)+v+1:]
         print(ba)
         exists = db.session.query(ValveConfiguration.timestamp).filter_by(timestamp=timestamp).scalar() is not None
         if not exists:
