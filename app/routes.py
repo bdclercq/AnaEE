@@ -2,6 +2,8 @@ from flask import render_template, request, redirect
 from app import app, db
 from app.models import ValveConfiguration
 import datetime
+from Tkinter import Tk
+from tkinter.filedialog import askopenfilename
 
 fs = ['fati1', 'fati2', 'fati3', 'fati4', 'fati5', 'fati6', 'fati7', 'fati8',
               'fati9', 'fati10', 'fati11', 'fati12']
@@ -42,8 +44,9 @@ def convert_data(data):
 
 
 @app.route('/')
+@app.route('/home')
 def home():
-    return render_template('basic_new.html')
+    return render_template('home.html')
 
 @app.route('/configure', methods=['POST', 'GET'])
 def configure():
@@ -88,3 +91,51 @@ def commit_config(timestamp):
             db.session.commit()
         print(ValveConfiguration.query.all())
     return redirect("/")
+
+
+@app.route('/export')
+def export():
+    return render_template('export.html')
+
+@app.route('/writetofile', methods=['POST', 'GET'])
+def writetofile():
+    filename = request.form['configfile']
+    f = open(filename, "w+")
+    ##############################
+    configs = ValveConfiguration.query.order_by(ValveConfiguration.timestamp).all()
+    for conf in configs:
+        ### Write timestamp
+        stamp = conf.timestamp
+        ##  Write Year
+        f.write(stamp.year)
+        f.write(',')
+        ##  Write Month
+        f.write(stamp.month)
+        f.write(',')
+        ##  Write Day
+        f.write(stamp.day)
+        f.write(',')
+        ##  Write Hour
+        f.write(stamp.hour)
+        f.write(',')
+        ##  Write Minutes
+        f.write(stamp.minute)
+        f.write(',')
+        ##  Write Seconds
+        f.write(stamp.second)
+        f.write(',')
+        ### Fill row
+        for i in range(4):
+            f.write(0)
+            f.write(',')
+        ### Add data
+        data = conf.status
+        for d in data:
+            f.write(d)
+            f.write(',')
+        ### Fill row
+        for i in range(4):
+            f.write(0)
+            f.write(',')
+    ##############################
+    f.close()
