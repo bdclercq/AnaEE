@@ -1,9 +1,8 @@
 from flask import render_template, request, redirect
 from app import app, db
 from app.models import ValveConfiguration
-import datetime
-from Tkinter import Tk
-from tkinter.filedialog import askopenfilename
+import datetime, threading
+import Tkinter, tkFileDialog
 
 fs = ['fati1', 'fati2', 'fati3', 'fati4', 'fati5', 'fati6', 'fati7', 'fati8',
               'fati9', 'fati10', 'fati11', 'fati12']
@@ -15,6 +14,51 @@ for i in range(1, 97):
     vs.append(name)
     vn.append(i)
 
+def export_data():
+    root = Tkinter.Tk()
+    # root.withdraw()
+    filename = tkFileDialog.askopenfilename()
+    if filename != '' :
+        f = open(filename, "w+")
+        print(filename)
+        ##############################
+        configs = ValveConfiguration.query.order_by(ValveConfiguration.timestamp).all()
+        for conf in configs:
+            ### Write timestamp
+            stamp = conf.timestamp
+            ##  Write Year
+            f.write(str(stamp.year))
+            f.write(',')
+            ##  Write Month
+            f.write(str(stamp.month))
+            f.write(',')
+            ##  Write Day
+            f.write(str(stamp.day))
+            f.write(',')
+            ##  Write Hour
+            f.write(str(stamp.hour))
+            f.write(',')
+            ##  Write Minutes
+            f.write(str(stamp.minute))
+            f.write(',')
+            ##  Write Seconds
+            f.write(str(stamp.second))
+            f.write(',')
+            ### Fill row
+            for i in range(4):
+                f.write(str(0))
+                f.write(',')
+            ### Add data
+            data = conf.status
+            for d in data:
+                f.write(d)
+                f.write(',')
+            ### Fill row
+            for i in range(4):
+                f.write(str(0))
+                f.write(',')
+        ##############################
+        f.close()
 
 def convert_timestamp(timestamp):
     year = int(timestamp[0:4])
@@ -31,7 +75,6 @@ def convert_timestamp(timestamp):
     timestamp = datetime.datetime.combine(date, time)
     return timestamp
 
-
 def convert_data(data):
     prev_checked = []
     data = data.status
@@ -41,7 +84,6 @@ def convert_data(data):
             prev_checked.append(i)
     print(prev_checked)
     return prev_checked
-
 
 @app.route('/')
 @app.route('/home')
@@ -99,43 +141,7 @@ def export():
 
 @app.route('/writetofile', methods=['POST', 'GET'])
 def writetofile():
-    filename = request.form['configfile']
-    f = open(filename, "w+")
-    ##############################
-    configs = ValveConfiguration.query.order_by(ValveConfiguration.timestamp).all()
-    for conf in configs:
-        ### Write timestamp
-        stamp = conf.timestamp
-        ##  Write Year
-        f.write(stamp.year)
-        f.write(',')
-        ##  Write Month
-        f.write(stamp.month)
-        f.write(',')
-        ##  Write Day
-        f.write(stamp.day)
-        f.write(',')
-        ##  Write Hour
-        f.write(stamp.hour)
-        f.write(',')
-        ##  Write Minutes
-        f.write(stamp.minute)
-        f.write(',')
-        ##  Write Seconds
-        f.write(stamp.second)
-        f.write(',')
-        ### Fill row
-        for i in range(4):
-            f.write(0)
-            f.write(',')
-        ### Add data
-        data = conf.status
-        for d in data:
-            f.write(d)
-            f.write(',')
-        ### Fill row
-        for i in range(4):
-            f.write(0)
-            f.write(',')
-    ##############################
-    f.close()
+    x = threading.Thread(target=export_data)
+    x.start()
+    # x.join()
+    return redirect("/")
