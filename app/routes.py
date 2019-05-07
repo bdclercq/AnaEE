@@ -5,6 +5,7 @@ import datetime, threading
 import Tkinter, tkFileDialog
 from bitarray import bitarray
 
+        ##############################
 fs = ['fati1', 'fati2', 'fati3', 'fati4', 'fati5', 'fati6', 'fati7', 'fati8',
               'fati9', 'fati10', 'fati11', 'fati12']
 vs = []
@@ -14,17 +15,43 @@ for i in range(1, 97):
     name = name+str(i)
     vs.append(name)
     vn.append(i)
+        ##############################
 
+'''
+Function that will write all data from the database to a chosen file.
+The output file will be a CSV file with following format:
+<sequence number>
+<year>
+<month>
+<day>
+<hour>
+<minute>
+<second>
+0
+0
+0
+0
+<decimal value of byte 1>
+<decimal value of byte 2>
+<decimal value of byte 3>
+...
+<decimal value of byte 12>
+0
+0
+0
+0
+<sequence number>
+...
+'''
 def export_data():
-    root = Tkinter.Tk()
-    # root.withdraw()
     filename = tkFileDialog.askopenfilename()
     if filename != '' :
         f = open(filename, "w+")
-        # print(filename)
         ##############################
+        # Get all configurations and sort by increasing timestamp
         configs = ValveConfiguration.query.order_by(ValveConfiguration.timestamp).all()
         config_id = 0
+        # Write each configuration to file
         for conf in configs:
             config_id = config_id+1
             f.write(str(config_id))
@@ -57,17 +84,13 @@ def export_data():
             data = conf.status
             j = 8
             for i in range(len(data)/8):
-                # print(str(int(data[j-8:j])))
                 byte = data[j-8:j]
-                print(byte)
                 ba = bitarray('0'*8, endian='little')
                 for it in range(len(byte)):
                     ba[it]=int(byte[it])
                 value = 0
-                print(ba)
                 for bit in ba:
                     value = (value << 1) | bit
-                print(value)
                 f.write(str(value))
                 f.write('\n')
                 j = j+8
@@ -78,6 +101,9 @@ def export_data():
         ##############################
         f.close()
 
+'''
+Converts the HTML timestamp to a Python timestamp
+'''
 def convert_timestamp(timestamp):
     year = int(timestamp[0:4])
     month = int(timestamp[5:7])
@@ -93,14 +119,15 @@ def convert_timestamp(timestamp):
     timestamp = datetime.datetime.combine(date, time)
     return timestamp
 
+'''
+Converts the data so it can be stored in the database
+'''
 def convert_data(data):
     prev_checked = []
     data = data.status
     for i in range(1, 97):
-        # print(data[i-1])
         if int(data[i-1]) == 1:
             prev_checked.append(i)
-    # print(prev_checked)
     return prev_checked
 
 @app.route('/')
@@ -115,7 +142,6 @@ def configure():
     exists = db.session.query(ValveConfiguration.timestamp).filter_by(timestamp=timestamp).scalar() is not None
     if exists:
         data = ValveConfiguration.query.filter_by(timestamp=timestamp).first()
-        # print(data)
         numbers = convert_data(data)
         return render_template('configure.html', timestamp=tmstmp, data=data, nrs=numbers, fatis=fs, valves=vs, valvenumbers=vn)
     if not exists:
@@ -126,7 +152,6 @@ def commit_config(timestamp):
     if request.method == 'POST':
         result = request.form
         timestamp = convert_timestamp(timestamp)
-        # print(timestamp)
         checked_valves = []
         for v in vs:
             if len(result.getlist(v)) > 0:
@@ -139,7 +164,6 @@ def commit_config(timestamp):
             else:
                 bs = bs+'0'
         ##############################
-        # print(bs)
         exists = db.session.query(ValveConfiguration.timestamp).filter_by(timestamp=timestamp).scalar() is not None
         if not exists:
             vc = ValveConfiguration(timestamp=timestamp, status=bs)
@@ -149,7 +173,6 @@ def commit_config(timestamp):
             config = ValveConfiguration.query.filter_by(timestamp=timestamp).first()
             config.status = bs
             db.session.commit()
-        # print(ValveConfiguration.query.all())
     return redirect("/")
 
 
@@ -161,5 +184,4 @@ def export():
 def writetofile():
     x = threading.Thread(target=export_data)
     x.start()
-    # x.join()
     return redirect("/")
