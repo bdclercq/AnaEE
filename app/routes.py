@@ -20,43 +20,50 @@ def export_data():
     filename = tkFileDialog.askopenfilename()
     if filename != '' :
         f = open(filename, "w+")
-        print(filename)
+        # print(filename)
         ##############################
         configs = ValveConfiguration.query.order_by(ValveConfiguration.timestamp).all()
+        config_id = 0
         for conf in configs:
+            config_id = config_id+1
+            f.write(str(config_id))
+            f.write('\n')
             ### Write timestamp
             stamp = conf.timestamp
             ##  Write Year
             f.write(str(stamp.year))
-            f.write(',')
+            f.write('\n')
             ##  Write Month
             f.write(str(stamp.month))
-            f.write(',')
+            f.write('\n')
             ##  Write Day
             f.write(str(stamp.day))
-            f.write(',')
+            f.write('\n')
             ##  Write Hour
             f.write(str(stamp.hour))
-            f.write(',')
+            f.write('\n')
             ##  Write Minutes
             f.write(str(stamp.minute))
-            f.write(',')
+            f.write('\n')
             ##  Write Seconds
             f.write(str(stamp.second))
-            f.write(',')
+            f.write('\n')
             ### Fill row
             for i in range(4):
                 f.write(str(0))
-                f.write(',')
+                f.write('\n')
             ### Add data
             data = conf.status
-            for d in data:
-                f.write(d)
-                f.write(',')
+            j = 8
+            for i in range(len(data)/8):
+                for d in data[j-8:j]:
+                    f.write(d)
+                f.write('\n')
+                j = j+8
             ### Fill row
             for i in range(4):
                 f.write(str(0))
-                f.write(',')
+                f.write('\n')
         ##############################
         f.close()
 
@@ -79,10 +86,10 @@ def convert_data(data):
     prev_checked = []
     data = data.status
     for i in range(1, 97):
-        print(data[i-1])
+        # print(data[i-1])
         if int(data[i-1]) == 1:
             prev_checked.append(i)
-    print(prev_checked)
+    # print(prev_checked)
     return prev_checked
 
 @app.route('/')
@@ -97,7 +104,7 @@ def configure():
     exists = db.session.query(ValveConfiguration.timestamp).filter_by(timestamp=timestamp).scalar() is not None
     if exists:
         data = ValveConfiguration.query.filter_by(timestamp=timestamp).first()
-        print(data)
+        # print(data)
         numbers = convert_data(data)
         return render_template('configure.html', timestamp=tmstmp, data=data, nrs=numbers, fatis=fs, valves=vs, valvenumbers=vn)
     if not exists:
@@ -108,7 +115,7 @@ def commit_config(timestamp):
     if request.method == 'POST':
         result = request.form
         timestamp = convert_timestamp(timestamp)
-        print(timestamp)
+        # print(timestamp)
         checked_valves = []
         for v in vs:
             if len(result.getlist(v)) > 0:
@@ -121,7 +128,7 @@ def commit_config(timestamp):
             else:
                 bs = bs+'0'
         ##############################
-        print(bs)
+        # print(bs)
         exists = db.session.query(ValveConfiguration.timestamp).filter_by(timestamp=timestamp).scalar() is not None
         if not exists:
             vc = ValveConfiguration(timestamp=timestamp, status=bs)
@@ -131,7 +138,7 @@ def commit_config(timestamp):
             config = ValveConfiguration.query.filter_by(timestamp=timestamp).first()
             config.status = bs
             db.session.commit()
-        print(ValveConfiguration.query.all())
+        # print(ValveConfiguration.query.all())
     return redirect("/")
 
 
