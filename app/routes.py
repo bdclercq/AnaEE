@@ -3,6 +3,7 @@ from app import app, db
 from app.models import ValveConfiguration
 import datetime, threading
 import Tkinter, tkFileDialog
+from bitarray import bitarray
 
 fs = ['fati1', 'fati2', 'fati3', 'fati4', 'fati5', 'fati6', 'fati7', 'fati8',
               'fati9', 'fati10', 'fati11', 'fati12']
@@ -56,8 +57,18 @@ def export_data():
             data = conf.status
             j = 8
             for i in range(len(data)/8):
-                for d in data[j-8:j]:
-                    f.write(d)
+                # print(str(int(data[j-8:j])))
+                byte = data[j-8:j]
+                print(byte)
+                ba = bitarray('0'*8, endian='little')
+                for it in range(len(byte)):
+                    ba[it]=int(byte[it])
+                value = 0
+                print(ba)
+                for bit in ba:
+                    value = (value << 1) | bit
+                print(value)
+                f.write(str(value))
                 f.write('\n')
                 j = j+8
             ### Fill row
