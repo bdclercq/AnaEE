@@ -3,6 +3,7 @@ from app import app, db
 from app.models import ValveConfiguration
 import datetime, threading
 import Tkinter, tkFileDialog
+import binascii
 from bitarray import bitarray
 
         ##############################
@@ -16,6 +17,62 @@ for i in range(1, 97):
     vs.append(name)
     vn.append(i)
         ##############################
+
+def convert_to_emi(val):
+    hex_val = '{0:04X}'.format(val)
+    inv = hex_val[2:] + hex_val[:2]
+    return inv
+
+'''
+Export data to emi format
+'''
+def export_data_emi():
+    filename = tkFileDialog.askopenfilename()
+    if filename != '' :
+        f = open(filename, "w+")
+        ##############################
+        # Get all configurations and sort by increasing timestamp
+        configs = ValveConfiguration.query.order_by(ValveConfiguration.timestamp).all()
+        config_id = 0
+        # Write each configuration to file
+        for conf in configs:
+            config_id = config_id+1
+            f.write(binascii.unhexlify(convert_to_emi(config_id)))
+            ### Write timestamp
+            stamp = conf.timestamp
+            ##  Write Year
+            f.write(binascii.unhexlify(convert_to_emi(stamp.year)))
+            ##  Write Month
+            f.write(binascii.unhexlify(convert_to_emi(stamp.month)))
+            ##  Write Day
+            f.write(binascii.unhexlify(convert_to_emi(stamp.day)))
+            ##  Write Hour
+            f.write(binascii.unhexlify(convert_to_emi(stamp.hour)))
+            ##  Write Minutes
+            f.write(binascii.unhexlify(convert_to_emi(stamp.minute)))
+            ##  Write Seconds
+            f.write(binascii.unhexlify(convert_to_emi(stamp.second)))
+            ### Add data
+            data = conf.status
+            j = 16
+            for i in range(len(data)/16):
+                # Convert each 16 bits to int
+                byte = data[j-16:j]
+                ba = bitarray('0'*16, endian='little')
+                for it in range(len(byte)):
+                    ba[it]=int(byte[it])
+                value = 0
+                for bit in ba:
+                    value = (value << 1) | bit
+                # Convert int to hex
+                f.write(binascii.unhexlify(convert_to_emi(value)))
+                j = j+16
+            ### Fill row
+            f.write(binascii.unhexlify(convert_to_emi(3)))
+            for i in range(4):
+                f.write(binascii.unhexlify(convert_to_emi(0)))
+        ##############################
+        f.close()
 
 '''
 Function that will write all data from the database to a chosen file.
@@ -180,8 +237,14 @@ def commit_config(timestamp):
 def export():
     return render_template('export.html')
 
-@app.route('/writetofile', methods=['POST', 'GET'])
-def writetofile():
+@app.route('/writetocsv', methods=['POST', 'GET'])
+def writetocsv():
     x = threading.Thread(target=export_data)
+    x.start()
+    return redirect("/")\
+
+@app.route('/writetoemi', methods=['POST', 'GET'])
+def writetoemi():
+    x = threading.Thread(target=export_data_emi)
     x.start()
     return redirect("/")
