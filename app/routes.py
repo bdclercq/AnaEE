@@ -209,10 +209,14 @@ def commit_config(timestamp):
     if request.method == 'POST':
         result = request.form
         timestamp = convert_timestamp(timestamp)
+        print(result)
         checked_valves = []
         for v in vs:
+            print(result.getlist(v))
             if len(result.getlist(v)) > 0:
-                checked_valves.append(int(result.getlist(v)[0]))
+                for vi in range(len(result.getlist(v))):
+                    checked_valves.append(int(result.getlist(v)[vi]))
+        print(checked_valves)
         ##############################
         bs = ''
         for i in range(1, 97):
@@ -220,6 +224,7 @@ def commit_config(timestamp):
                 bs = bs+'1'
             else:
                 bs = bs+'0'
+        print(bs)
         ##############################
         exists = db.session.query(ValveConfiguration.timestamp).filter_by(timestamp=timestamp).scalar() is not None
         if not exists:

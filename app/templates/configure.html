@@ -27,6 +27,7 @@
             padding: 10px;
             heigth: 300px;
         }
+
         .row:after {
             content: "";
             display: table;
@@ -104,27 +105,84 @@
             </div>
             <!-- /.container-fluid -->
             {% if  timestamp %}
-                <script>
-                function showValves(){
-                    var fati = document.getElementsByName();
-
-                }
-                </script>
-                Configuring for {{ timestamp }}
-            <form action="/commit_config/{{ timestamp }}" method="post">
-                <div class="row">
+                {% if data %}
+                    Previous data found
+                {% else %}
+                    Configuring for {{ timestamp }}
+                {% endif %}
+                <form action="/commit_config/{{ timestamp }}" method="post">
+                    <div class="row">
                         {% if data %}
-{#                    {{ data }}#}
-                            Previous data found: {{ data }}
                             <div class="col-xl-3 col-md-6 mb-4">
-                                {% for f in range(12) %}
-                                <span>{{ fatis[f] }}</span><br>
+                                {% for f in range(0,3) %}
+                                    <span>{{ fatis[f] }}</span><br>
                                     <div class="col-xl-3 col-md-6 mb-4">
                                         {% for v in range(8) %}
                                             {% if valvenumbers[(f*8)+v] in nrs %}
-                                            <input type="checkbox" name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }} checked>{{ valves[v] }}<br>
+                                                <input type="checkbox"
+                                                       name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }} checked>
+                                                {{ valves[v] }}<br>
                                             {% else %}
-                                            <input type="checkbox" name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }}>{{ valves[v] }}<br>
+                                                <input type="checkbox"
+                                                       name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }}>
+                                                {{ valves[v] }}<br>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                {% for f in range(3,6) %}
+                                    <span>{{ fatis[f] }}</span><br>
+                                    <div class="col-xl-3 col-md-6 mb-4">
+                                        {% for v in range(8) %}
+                                            {% if valvenumbers[(f*8)+v] in nrs %}
+                                                <input type="checkbox"
+                                                       name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }} checked>
+                                                {{ valves[v] }}<br>
+                                            {% else %}
+                                                <input type="checkbox"
+                                                       name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }}>
+                                                {{ valves[v] }}<br>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                {% for f in range(6,9) %}
+                                    <span>{{ fatis[f] }}</span><br>
+                                    <div class="col-xl-3 col-md-6 mb-4">
+                                        {% for v in range(8) %}
+                                            {% if valvenumbers[(f*8)+v] in nrs %}
+                                                <input type="checkbox"
+                                                       name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }} checked>
+                                                {{ valves[v] }}<br>
+                                            {% else %}
+                                                <input type="checkbox"
+                                                       name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }}>
+                                                {{ valves[v] }}<br>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                {% for f in range(9,12) %}
+                                    <span>{{ fatis[f] }}</span><br>
+                                    <div class="col-xl-3 col-md-6 mb-4">
+                                        {% for v in range(8) %}
+                                            {% if valvenumbers[(f*8)+v] in nrs %}
+                                                <input type="checkbox"
+                                                       name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }} checked>
+                                                {{ valves[v] }}<br>
+                                            {% else %}
+                                                <input type="checkbox"
+                                                       name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }}>
+                                                {{ valves[v] }}<br>
                                             {% endif %}
                                         {% endfor %}
                                     </div>
@@ -132,20 +190,53 @@
                             </div>
                         {% else %}
                             <div class="col-xl-3 col-md-6 mb-4">
-                                {% for f in range(12) %}
-                                <span>{{ fatis[f] }}</span><br>
+                                {% for f in range(0,3) %}
+                                    <span>{{ fatis[f] }}</span><br>
                                     <div class="col-xl-3 col-md-6 mb-4">
                                         {% for v in range(8) %}
-                                        <input type="checkbox" name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }}>{{ valves[v] }}<br>
+                                            <input type="checkbox" name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }}>{{ valves[v] }}<br>
+                                        {% endfor %}
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                {% for f in range(3,6) %}
+                                    <span>{{ fatis[f] }}</span><br>
+                                    <div class="col-xl-3 col-md-6 mb-4">
+                                        {% for v in range(8) %}
+                                            <input type="checkbox" name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }}>{{ valves[v] }}<br>
+                                        {% endfor %}
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                {% for f in range(6,9) %}
+                                    <span>{{ fatis[f] }}</span><br>
+                                    <div class="col-xl-3 col-md-6 mb-4">
+                                        {% for v in range(8) %}
+                                            <input type="checkbox" name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }}>{{ valves[v] }}<br>
+                                        {% endfor %}
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                {% for f in range(9,12) %}
+                                    <span>{{ fatis[f] }}</span><br>
+                                    <div class="col-xl-3 col-md-6 mb-4">
+                                        {% for v in range(8) %}
+                                            <input type="checkbox" name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }}>{{ valves[v] }}<br>
                                         {% endfor %}
                                     </div>
                                 {% endfor %}
                             </div>
                         {% endif %}
-                </div>
+                    </div>
 
-                <input type="submit" value="Commit">
-            </form>
+                    <input type="submit" value="Commit">
+                </form>
             {% endif %}
         </div>
         <!-- End of Main Content -->
