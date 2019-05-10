@@ -21,16 +21,28 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/sb-admin-2.min.css') }}">
 
     <style>
-        .column {
-            float: left;
-            width: 30%;
-            padding: 10px;
-            heigth: 300px;
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            border-bottom: 1px dotted black;
         }
-        .row:after {
-            content: "";
-            display: table;
-            clear: both;
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 120px;
+            background-color: black;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 0;
+
+            /* Position the tooltip */
+            position: absolute;
+            z-index: 1;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
         }
     </style>
 
@@ -102,15 +114,26 @@
 
             </div>
             <!-- /.container-fluid -->
+            <div class="col-xl-3 col-md-6 mb-4">
+                <form action="/configure" method="post">
 
-            <form action="/configure" method="post">
+                    <div>
+                        <input type="datetime-local" step=1 name="datetime">
+                    </div>
 
-                <div>
-                    <input type="datetime-local" step=1 name="datetime">
-                </div>
-
-                <input type="submit" value="Commit">
-            </form>
+                    <input type="submit" value="Commit">
+                </form>
+            </div>
+            <div class="col-xl-3 col-md-6 mb-4">
+                {% if times, stats %}
+                    {% for i in range(size) %}
+                        <button type="button" class="btn btn-secondary" data-toggle="tooltip" data-html="true" data-placement="top"
+                                title={{ stats[i] }}>
+                            {{ times[i] }}
+                        </button><br>
+                    {% endfor %}
+                {% endif %}
+            </div>
 
         </div>
         <!-- End of Main Content -->

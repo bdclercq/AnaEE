@@ -5,6 +5,7 @@ import datetime, threading
 import Tkinter, tkFileDialog
 import binascii
 from bitarray import bitarray
+import os
 
         ##############################
 fs = ['fati1', 'fati2', 'fati3', 'fati4', 'fati5', 'fati6', 'fati7', 'fati8',
@@ -29,7 +30,7 @@ Export data to emi format
 def export_data_emi():
     filename = tkFileDialog.askopenfilename()
     if filename != '' :
-        f = open(filename, "w+")
+        f = open(filename, "wb")
         ##############################
         # Get all configurations and sort by increasing timestamp
         configs = ValveConfiguration.query.order_by(ValveConfiguration.timestamp).all()
@@ -40,11 +41,14 @@ def export_data_emi():
             f.write(binascii.unhexlify(convert_to_emi(config_id)))
             ### Write timestamp
             stamp = conf.timestamp
+            print(stamp)
             ##  Write Year
             f.write(binascii.unhexlify(convert_to_emi(stamp.year)))
             ##  Write Month
+            print(convert_to_emi(stamp.month))
             f.write(binascii.unhexlify(convert_to_emi(stamp.month)))
             ##  Write Day
+            print(convert_to_emi(stamp.day))
             f.write(binascii.unhexlify(convert_to_emi(stamp.day)))
             ##  Write Hour
             f.write(binascii.unhexlify(convert_to_emi(stamp.hour)))
@@ -55,7 +59,7 @@ def export_data_emi():
             ### Add data
             data = conf.status
             j = 16
-            for i in range(len(data)/16):
+            for i in range(6):
                 # Convert each 16 bits to int
                 byte = data[j-16:j]
                 ba = bitarray('0'*16, endian='little')
@@ -68,9 +72,10 @@ def export_data_emi():
                 f.write(binascii.unhexlify(convert_to_emi(value)))
                 j = j+16
             ### Fill row
-            f.write(binascii.unhexlify(convert_to_emi(3)))
-            for i in range(4):
+            for i in range(6):
                 f.write(binascii.unhexlify(convert_to_emi(0)))
+            ##
+            f.write(binascii.unhexlify(convert_to_emi(0)))
         ##############################
         f.close()
 
@@ -190,7 +195,13 @@ def convert_data(data):
 @app.route('/')
 @app.route('/home')
 def home():
-    return render_template('home.html')
+    vcs = ValveConfiguration.query.order_by(ValveConfiguration.timestamp).all()
+    times=[]
+    statuses=[]
+    for vc in vcs:
+        times.append(str(vc.timestamp))
+        statuses.append(convert_data(vc))
+    return render_template('home.html', size=len(times), times=times, stats=statuses, fatis=fs, valves=vs, valvenumbers=vn)
 
 @app.route('/configure', methods=['POST', 'GET'])
 def configure():
@@ -252,4 +263,5 @@ def writetocsv():
 def writetoemi():
     x = threading.Thread(target=export_data_emi)
     x.start()
+    x.join()
     return redirect("/")
