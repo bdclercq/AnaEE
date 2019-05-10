@@ -200,7 +200,7 @@ def home():
     statuses=[]
     for vc in vcs:
         times.append(str(vc.timestamp))
-        statuses.append(convert_data(vc))
+        statuses.append(vc.status)
     return render_template('home.html', size=len(times), times=times, stats=statuses, fatis=fs, valves=vs, valvenumbers=vn)
 
 @app.route('/configure', methods=['POST', 'GET'])
