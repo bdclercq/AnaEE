@@ -1,273 +1,145 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <title>AnaEE</title>
-
-    <!-- Custom fonts for this template-->
-
-    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/fontawesome-free/css/all.min.css') }}">
-    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-          rel="stylesheet">
-
-    <!-- Custom styles for this template-->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/sb-admin-2.min.css') }}">
-
-    <style>
-        .column {
-            float: left;
-            width: 30%;
-            padding: 10px;
-            heigth: 300px;
-        }
-
-        .row:after {
-            content: "";
-            display: table;
-            clear: both;
-        }
-    </style>
-
-</head>
-
-<body id="page-top">
-
-<!-- Page Wrapper -->
-<div id="wrapper">
-
-    <!-- Sidebar -->
-    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
-
-        <!-- Sidebar - Brand -->
-        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/home">
-            <div class="sidebar-brand-icon rotate-n-15">
-                <i class="fas fa-laugh-wink"></i>
-            </div>
-            <div class="sidebar-brand-text mx-3">AnaEE</div>
-        </a>
-
-        <!-- Divider -->
-        <hr class="sidebar-divider my-0">
-
-        <!-- Nav Item - Dashboard -->
-        <li class="nav-item">
-            <a class="nav-link" href="/home">
-                <i class="fas fa-fw fa-tachometer-alt"></i>
-                <span>Home</span></a>
-        </li>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="/export">
-                <i class="fas fa-fw fa-tachometer-alt"></i>
-                <span>Export data</span></a>
-        </li>
-
-        <!-- Divider -->
-        <hr class="sidebar-divider">
-
-        <!-- Heading -->
-        <div class="sidebar-heading">
-            Interface
-        </div>
-    </ul>
-    <!-- End of Sidebar -->
-
-    <!-- Content Wrapper -->
-    <div id="content-wrapper" class="d-flex flex-column">
-
-        <!-- Main Content -->
-        <div id="content">
-
-            <!-- Topbar -->
-            <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-
-                <!-- Sidebar Toggle (Topbar) -->
-                <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-                    <i class="fa fa-bars"></i>
-                </button>
-
-            </nav>
-            <!-- End of Topbar -->
-
-            <!-- Begin Page Content -->
-            <div class="container-fluid">
-
-                <!-- Page Heading -->
-                <h1 class="h3 mb-4 text-gray-800">AnaEE: configure</h1>
-
-            </div>
-            <!-- /.container-fluid -->
-            {% if  timestamp %}
-                {% if data %}
-                    Previous data found
-                {% else %}
-                    Configuring for {{ timestamp }}
-                {% endif %}
-                <form action="/commit_config/{{ timestamp }}" method="post">
-                    <div class="row">
-                        {% if data %}
-                            <div class="col-xl-3 col-md-6 mb-4">
-                                {% for f in range(0,3) %}
-                                    <span>{{ fatis[f] }}</span><br>
-                                    <div class="col-xl-3 col-md-6 mb-4">
-                                        {% for v in range(8) %}
-                                            {% if valvenumbers[(f*8)+v] in nrs %}
-                                                <input type="checkbox"
-                                                       name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }} checked>
-                                                {{ valves[v] }}<br>
-                                            {% else %}
-                                                <input type="checkbox"
-                                                       name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }}>
-                                                {{ valves[v] }}<br>
-                                            {% endif %}
-                                        {% endfor %}
-                                    </div>
-                                {% endfor %}
-                            </div>
-
-                            <div class="col-xl-3 col-md-6 mb-4">
-                                {% for f in range(3,6) %}
-                                    <span>{{ fatis[f] }}</span><br>
-                                    <div class="col-xl-3 col-md-6 mb-4">
-                                        {% for v in range(8) %}
-                                            {% if valvenumbers[(f*8)+v] in nrs %}
-                                                <input type="checkbox"
-                                                       name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }} checked>
-                                                {{ valves[v] }}<br>
-                                            {% else %}
-                                                <input type="checkbox"
-                                                       name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }}>
-                                                {{ valves[v] }}<br>
-                                            {% endif %}
-                                        {% endfor %}
-                                    </div>
-                                {% endfor %}
-                            </div>
-
-                            <div class="col-xl-3 col-md-6 mb-4">
-                                {% for f in range(6,9) %}
-                                    <span>{{ fatis[f] }}</span><br>
-                                    <div class="col-xl-3 col-md-6 mb-4">
-                                        {% for v in range(8) %}
-                                            {% if valvenumbers[(f*8)+v] in nrs %}
-                                                <input type="checkbox"
-                                                       name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }} checked>
-                                                {{ valves[v] }}<br>
-                                            {% else %}
-                                                <input type="checkbox"
-                                                       name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }}>
-                                                {{ valves[v] }}<br>
-                                            {% endif %}
-                                        {% endfor %}
-                                    </div>
-                                {% endfor %}
-                            </div>
-
-                            <div class="col-xl-3 col-md-6 mb-4">
-                                {% for f in range(9,12) %}
-                                    <span>{{ fatis[f] }}</span><br>
-                                    <div class="col-xl-3 col-md-6 mb-4">
-                                        {% for v in range(8) %}
-                                            {% if valvenumbers[(f*8)+v] in nrs %}
-                                                <input type="checkbox"
-                                                       name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }} checked>
-                                                {{ valves[v] }}<br>
-                                            {% else %}
-                                                <input type="checkbox"
-                                                       name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }}>
-                                                {{ valves[v] }}<br>
-                                            {% endif %}
-                                        {% endfor %}
-                                    </div>
-                                {% endfor %}
-                            </div>
-                        {% else %}
-                            <div class="col-xl-3 col-md-6 mb-4">
-                                {% for f in range(0,3) %}
-                                    <span>{{ fatis[f] }}</span><br>
-                                    <div class="col-xl-3 col-md-6 mb-4">
-                                        {% for v in range(8) %}
-                                            <input type="checkbox" name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }}>{{ valves[v] }}<br>
-                                        {% endfor %}
-                                    </div>
-                                {% endfor %}
-                            </div>
-
-                            <div class="col-xl-3 col-md-6 mb-4">
-                                {% for f in range(3,6) %}
-                                    <span>{{ fatis[f] }}</span><br>
-                                    <div class="col-xl-3 col-md-6 mb-4">
-                                        {% for v in range(8) %}
-                                            <input type="checkbox" name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }}>{{ valves[v] }}<br>
-                                        {% endfor %}
-                                    </div>
-                                {% endfor %}
-                            </div>
-
-                            <div class="col-xl-3 col-md-6 mb-4">
-                                {% for f in range(6,9) %}
-                                    <span>{{ fatis[f] }}</span><br>
-                                    <div class="col-xl-3 col-md-6 mb-4">
-                                        {% for v in range(8) %}
-                                            <input type="checkbox" name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }}>{{ valves[v] }}<br>
-                                        {% endfor %}
-                                    </div>
-                                {% endfor %}
-                            </div>
-
-                            <div class="col-xl-3 col-md-6 mb-4">
-                                {% for f in range(9,12) %}
-                                    <span>{{ fatis[f] }}</span><br>
-                                    <div class="col-xl-3 col-md-6 mb-4">
-                                        {% for v in range(8) %}
-                                            <input type="checkbox" name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }}>{{ valves[v] }}<br>
-                                        {% endfor %}
-                                    </div>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                    </div>
-
-                    <input type="submit" value="Commit">
-                </form>
+{% extends "template.html" %}
+{% block content %}
+    <div>
+        <!-- /.container-fluid -->
+        {% if  timestamp %}
+            {% if data %}
+                Previous data found
+            {% else %}
+                Configuring for {{ timestamp }}
             {% endif %}
-        </div>
-        <!-- End of Main Content -->
+            <form action="/commit_config/{{ timestamp }}" method="post">
+                <div class="row">
+                    {% if data %}
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            {% for f in range(0,3) %}
+                                <span>{{ fatis[f] }}</span><br>
+                                <div class="col-xl-3 col-md-6 mb-4">
+                                    {% for v in range(8) %}
+                                        {% if valvenumbers[(f*8)+v] in nrs %}
+                                            <input type="checkbox"
+                                                   name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }} checked>
+                                            {{ valves[v] }}<br>
+                                        {% else %}
+                                            <input type="checkbox"
+                                                   name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }}>
+                                            {{ valves[v] }}<br>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}
+                        </div>
 
-        <!-- Footer -->
-        <footer class="sticky-footer bg-white">
-            <div class="container my-auto">
-                <div class="copyright text-center my-auto">
-                    <span>Copyright &copy; Your Website 2019</span>
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            {% for f in range(3,6) %}
+                                <span>{{ fatis[f] }}</span><br>
+                                <div class="col-xl-3 col-md-6 mb-4">
+                                    {% for v in range(8) %}
+                                        {% if valvenumbers[(f*8)+v] in nrs %}
+                                            <input type="checkbox"
+                                                   name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }} checked>
+                                            {{ valves[v] }}<br>
+                                        {% else %}
+                                            <input type="checkbox"
+                                                   name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }}>
+                                            {{ valves[v] }}<br>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            {% for f in range(6,9) %}
+                                <span>{{ fatis[f] }}</span><br>
+                                <div class="col-xl-3 col-md-6 mb-4">
+                                    {% for v in range(8) %}
+                                        {% if valvenumbers[(f*8)+v] in nrs %}
+                                            <input type="checkbox"
+                                                   name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }} checked>
+                                            {{ valves[v] }}<br>
+                                        {% else %}
+                                            <input type="checkbox"
+                                                   name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }}>
+                                            {{ valves[v] }}<br>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            {% for f in range(9,12) %}
+                                <span>{{ fatis[f] }}</span><br>
+                                <div class="col-xl-3 col-md-6 mb-4">
+                                    {% for v in range(8) %}
+                                        {% if valvenumbers[(f*8)+v] in nrs %}
+                                            <input type="checkbox"
+                                                   name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }} checked>
+                                            {{ valves[v] }}<br>
+                                        {% else %}
+                                            <input type="checkbox"
+                                                   name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }}>
+                                            {{ valves[v] }}<br>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            {% for f in range(0,3) %}
+                                <span>{{ fatis[f] }}</span><br>
+                                <div class="col-xl-3 col-md-6 mb-4">
+                                    {% for v in range(8) %}
+                                        <input type="checkbox" name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }}>
+                                        {{ valves[v] }}<br>
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            {% for f in range(3,6) %}
+                                <span>{{ fatis[f] }}</span><br>
+                                <div class="col-xl-3 col-md-6 mb-4">
+                                    {% for v in range(8) %}
+                                        <input type="checkbox" name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }}>
+                                        {{ valves[v] }}<br>
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            {% for f in range(6,9) %}
+                                <span>{{ fatis[f] }}</span><br>
+                                <div class="col-xl-3 col-md-6 mb-4">
+                                    {% for v in range(8) %}
+                                        <input type="checkbox" name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }}>
+                                        {{ valves[v] }}<br>
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            {% for f in range(9,12) %}
+                                <span>{{ fatis[f] }}</span><br>
+                                <div class="col-xl-3 col-md-6 mb-4">
+                                    {% for v in range(8) %}
+                                        <input type="checkbox" name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }}>
+                                        {{ valves[v] }}<br>
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
                 </div>
-            </div>
-        </footer>
-        <!-- End of Footer -->
 
+                <input type="submit" value="Commit">
+            </form>
+        {% endif %}
     </div>
-    <!-- End of Content Wrapper -->
-
-</div>
-<!-- End of Page Wrapper -->
-
-
-<!-- Bootstrap core JavaScript-->
-<script src="vendor/jquery/jquery.min.js"></script>
-<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-<!-- Core plugin JavaScript-->
-<script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-
-<!-- Custom scripts for all pages-->
-<script src="js/sb-admin-2.min.js"></script>
-
-</body>
-
-</html>
+    <!-- End of Main Content -->
+{% endblock %}
