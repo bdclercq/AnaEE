@@ -2,7 +2,6 @@ from flask import render_template, request, redirect
 from app import app, db
 from app.models import ValveConfiguration
 import threading
-import os
 from app.AnaEEUtils import *
 
         ##############################
@@ -16,7 +15,6 @@ for i in range(1, 97):
     vs.append(name)
     vn.append(i)
         ##############################
-
 
 @app.route('/')
 @app.route('/home')
@@ -73,7 +71,6 @@ def commit_config(timestamp):
             config.status = bs
             db.session.commit()
     return redirect("/")
-
 
 @app.route('/export')
 def export():
