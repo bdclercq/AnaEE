@@ -88,3 +88,10 @@ def writetoemi():
     x.start()
     x.join()
     return redirect("/")
+
+@app.route('/remove/<timestamp>', methods=['POST', 'GET'])
+def remove(timestamp):
+    vc = ValveConfiguration.query.filter_by(timestamp=convert_timestamp(timestamp)).first()
+    db.session.delete(vc)
+    db.session.commit()
+    return redirect("/")

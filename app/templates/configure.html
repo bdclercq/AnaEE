@@ -23,6 +23,16 @@
                                         {% endfor %}
                                         document.getElementById("values").innerHTML = s;
                                         '>Copy
+                                </button>
+                                <button id="pst" type="button" onclick='
+                                    var s = document.getElementById("values");
+                                    var to_set = [];
+                                    for(var i = 0; i<s.innerHTML.length; i++){
+                                        var index = {{ f*8 }}+parseInt(s.innerHTML[i],10);
+                                        to_set.push(index);
+                                        document.getElementById(index).checked = true;
+                                    }
+                                    '>Paste
                                 </button><br>
                                 <div class="col-xl-3 col-md-6 mb-4">
                                     {% for v in range(8) %}
@@ -54,6 +64,16 @@
                                         {% endfor %}
                                         document.getElementById("values").innerHTML = s;
                                         '>Copy
+                                </button>
+                                <button id="pst" type="button" onclick='
+                                    var s = document.getElementById("values");
+                                    var to_set = [];
+                                    for(var i = 0; i<s.innerHTML.length; i++){
+                                        var index = {{ f*8 }}+parseInt(s.innerHTML[i],10);
+                                        to_set.push(index);
+                                        document.getElementById(index).checked = true;
+                                    }
+                                    '>Paste
                                 </button><br>
                                 <div class="col-xl-3 col-md-6 mb-4">
                                     {% for v in range(8) %}
@@ -85,6 +105,16 @@
                                         {% endfor %}
                                         document.getElementById("values").innerHTML = s;
                                         '>Copy
+                                </button>
+                                <button id="pst" type="button" onclick='
+                                    var s = document.getElementById("values");
+                                    var to_set = [];
+                                    for(var i = 0; i<s.innerHTML.length; i++){
+                                        var index = {{ f*8 }}+parseInt(s.innerHTML[i],10);
+                                        to_set.push(index);
+                                        document.getElementById(index).checked = true;
+                                    }
+                                    '>Paste
                                 </button><br>
                                 <div class="col-xl-3 col-md-6 mb-4">
                                     {% for v in range(8) %}
@@ -116,6 +146,16 @@
                                         {% endfor %}
                                         document.getElementById("values").innerHTML = s;
                                         '>Copy
+                                </button>
+                                <button id="pst" type="button" onclick='
+                                    var s = document.getElementById("values");
+                                    var to_set = [];
+                                    for(var i = 0; i<s.innerHTML.length; i++){
+                                        var index = {{ f*8 }}+parseInt(s.innerHTML[i],10);
+                                        to_set.push(index);
+                                        document.getElementById(index).checked = true;
+                                    }
+                                    '>Paste
                                 </button><br>
                                 <div class="col-xl-3 col-md-6 mb-4">
                                     {% for v in range(8) %}
@@ -147,6 +187,16 @@
                                         {% endfor %}
                                         document.getElementById("values").innerHTML = s;
                                         '>Copy
+                                </button>
+                                <button id="pst" type="button" onclick='
+                                    var s = document.getElementById("values");
+                                    var to_set = [];
+                                    for(var i = 0; i<s.innerHTML.length; i++){
+                                        var index = {{ f*8 }}+parseInt(s.innerHTML[i],10);
+                                        to_set.push(index);
+                                        document.getElementById(index).checked = true;
+                                    }
+                                    '>Paste
                                 </button><br>
                                 <div class="col-xl-3 col-md-6 mb-4">
                                     {% for v in range(8) %}
@@ -170,6 +220,16 @@
                                         {% endfor %}
                                         document.getElementById("values").innerHTML = s;
                                         '>Copy
+                                </button>
+                                <button id="pst" type="button" onclick='
+                                    var s = document.getElementById("values");
+                                    var to_set = [];
+                                    for(var i = 0; i<s.innerHTML.length; i++){
+                                        var index = {{ f*8 }}+parseInt(s.innerHTML[i],10);
+                                        to_set.push(index);
+                                        document.getElementById(index).checked = true;
+                                    }
+                                    '>Paste
                                 </button><br>
                                 <div class="col-xl-3 col-md-6 mb-4">
                                     {% for v in range(8) %}
@@ -193,6 +253,16 @@
                                         {% endfor %}
                                         document.getElementById("values").innerHTML = s;
                                         '>Copy
+                                </button>
+                                <button id="pst" type="button" onclick='
+                                    var s = document.getElementById("values");
+                                    var to_set = [];
+                                    for(var i = 0; i<s.innerHTML.length; i++){
+                                        var index = {{ f*8 }}+parseInt(s.innerHTML[i],10);
+                                        to_set.push(index);
+                                        document.getElementById(index).checked = true;
+                                    }
+                                    '>Paste
                                 </button><br>
                                 <div class="col-xl-3 col-md-6 mb-4">
                                     {% for v in range(8) %}
@@ -219,11 +289,9 @@
                                 </button>
                                 <button id="pst" type="button" onclick='
                                     var s = document.getElementById("values");
-                                    window.alert(s.innerHTML);
                                     var to_set = [];
                                     for(var i = 0; i<s.innerHTML.length; i++){
                                         var index = {{ f*8 }}+parseInt(s.innerHTML[i],10);
-                                        window.alert(index);
                                         to_set.push(index);
                                         document.getElementById(index).checked = true;
                                     }
@@ -240,7 +308,7 @@
                         </div>
                     {% endif %}
                 </div>
-                <p id="values"></p>
+                <p id="values" hidden></p>
                 <input type="submit" value="Commit">
             </form>
         {% endif %}

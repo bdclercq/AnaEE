@@ -21,7 +21,8 @@
                             data-placement="top"
                             title={{ stats[i] }}>
                         {{ times[i] }}
-                    </button><br>
+                    </button>
+                    <a href="/remove/{{ times[i] }}">Remove</a><br>
                 {% endfor %}
             </div>
         {% endif %}
