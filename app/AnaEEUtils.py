@@ -15,6 +15,7 @@ Export data to emi format
 def export_data_emi():
     filename = tkFileDialog.askopenfilename()
     if filename != '' :
+        # Open file in binary mode to avoid write bug
         f = open(filename, "wb")
         ##############################
         # Get all configurations and sort by increasing timestamp
@@ -176,3 +177,15 @@ def convert_data(data):
         if int(data[i-1]) == 1:
             prev_checked.append(i)
     return prev_checked
+
+'''
+Returns the date of a timestamp
+'''
+def getDate(timestamp):
+    return timestamp.year, timestamp.month, timestamp.day
+
+def diff(t1, t2):
+    hdiff = t1.hour - t2.hour
+    mdiff = t1.minute - t2.minute
+    sdiff = t1.second - t2.second
+    return hdiff+mdiff+sdiff

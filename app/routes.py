@@ -95,3 +95,35 @@ def remove(timestamp):
     db.session.delete(vc)
     db.session.commit()
     return redirect("/")
+
+@app.route('/overview')
+def overview():
+    data = {}
+    confs = ValveConfiguration.query.order_by(ValveConfiguration.timestamp).all()
+    print(len(confs))
+    for conf in confs:
+        year, month, day = getDate(conf.timestamp)
+        if year not in data:
+            data[year] = {}
+        if month not in data[year]:
+            data[year][month] = {}
+        if day not in data[year][month]:
+            data[year][month][day] = {}
+            for v in range(96):
+                data[year][month][day][v] = {}
+                data[year][month][day][v]['latest'] = 0
+                data[year][month][day][v]['value'] = 0
+        time = conf.timestamp.time
+        status = conf.status
+        for i in range(96):
+            if status[i] == '1':
+                print(1)
+                if data[year][month][day][i]['latest'] == 0:
+                    data[year][month][day][i]['latest'] = time
+            elif status[i] == '0':
+                print(0)
+                if data[year][month][day][i]['latest'] != 0:
+                    data[year][month][day][i]['value'] = diff(time, data[year][month][day][i]['latest'])
+                    data[year][month][day][i]['latest'] = 0
+    print(data)
+    return redirect("/")
