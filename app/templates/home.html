@@ -1,6 +1,7 @@
 {% extends "template.html" %}
 {% block content %}
-<div>
+
+<div class="row">
     <div class="col-xl-3 col-md-6 mb-4">
         <a>To start configuration, please enter a date and time below.</a>
         <form action="/configure" method="post">
@@ -12,17 +13,19 @@
             <input type="submit" value="Commit">
         </form>
     </div>
+
     <div class="col-xl-3 col-md-6 mb-4">
         <a>Data stored in the database</a>
         {% if times, stats %}
-            <div class="ex3">
+            <div class="scroller">
                 {% for i in range(size) %}
                     <button type="button" class="btn btn-secondary" data-toggle="tooltip" data-html="true"
                             data-placement="top"
                             title={{ stats[i] }}>
                         {{ times[i] }}
                     </button>
-                    <a href="/remove/{{ times[i] }}">Remove</a><br>
+                    <a href="/remove/{{ times[i] }}">Remove</a>
+                    <a href="/duplication/{{ times[i] }}">Duplicate</a><br>
                 {% endfor %}
             </div>
         {% endif %}

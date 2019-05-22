@@ -1,0 +1,17 @@
+{% extends "template.html" %}
+{% block content %}
+
+<div class="row">
+    {% if old %}
+        <form action="/duplicate/{{ old }}" method="post">
+            <div>
+                <input type="date" step=1 name="newdate">
+            </div>
+
+            <input type="submit" value="Commit">
+        </form>
+    {% else %}
+        You're trying to duplicate something that can't be duplicated, <a href="/">go back</a> and try again.
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,31 +1,36 @@
+import subprocess
+import threading
+
 from flask import render_template, request, redirect
+
 from app import app, db
-from app.models import ValveConfiguration
-import threading, subprocess
 from app.AnaEEUtils import *
 
-        ##############################
+##############################
 fs = ['fati1', 'fati2', 'fati3', 'fati4', 'fati5', 'fati6', 'fati7', 'fati8',
-              'fati9', 'fati10', 'fati11', 'fati12']
+      'fati9', 'fati10', 'fati11', 'fati12']
 vs = []
 vn = []
 for i in range(1, 97):
     name = "valve"
-    name = name+str(i)
+    name = name + str(i)
     vs.append(name)
     vn.append(i)
-        ##############################
+    ##############################
+
 
 @app.route('/')
 @app.route('/home')
 def home():
     vcs = ValveConfiguration.query.order_by(ValveConfiguration.timestamp).all()
-    times=[]
-    statuses=[]
+    times = []
+    statuses = []
     for vc in vcs:
         times.append(str(vc.timestamp))
         statuses.append(vc.status)
-    return render_template('home.html', size=len(times), times=times, stats=statuses, fatis=fs, valves=vs, valvenumbers=vn)
+    return render_template('home.html', size=len(times), times=times, stats=statuses, fatis=fs, valves=vs,
+                           valvenumbers=vn)
+
 
 @app.route('/configure', methods=['POST', 'GET'])
 def configure():
@@ -35,9 +40,11 @@ def configure():
     if exists:
         data = ValveConfiguration.query.filter_by(timestamp=timestamp).first()
         numbers = convert_data(data)
-        return render_template('configure.html', timestamp=tmstmp, data=data, nrs=numbers, fatis=fs, valves=vs, valvenumbers=vn)
+        return render_template('configure.html', timestamp=tmstmp, data=data, nrs=numbers, fatis=fs, valves=vs,
+                               valvenumbers=vn)
     if not exists:
         return render_template('configure.html', timestamp=tmstmp, fatis=fs, valves=vs, valvenumbers=vn)
+
 
 @app.route('/commit_config/<timestamp>', methods=['POST', 'GET'])
 def commit_config(timestamp):
@@ -56,9 +63,9 @@ def commit_config(timestamp):
         bs = ''
         for i in range(1, 97):
             if i in checked_valves:
-                bs = bs+'1'
+                bs = bs + '1'
             else:
-                bs = bs+'0'
+                bs = bs + '0'
         print(bs)
         ##############################
         exists = db.session.query(ValveConfiguration.timestamp).filter_by(timestamp=timestamp).scalar() is not None
@@ -72,26 +79,30 @@ def commit_config(timestamp):
             db.session.commit()
     return redirect("/")
 
+
 @app.route('/export')
 def export():
     return render_template('export.html')
 
+
 @app.route('/writetocsv', methods=['POST', 'GET'])
 def writetocsv():
-    x = threading.Thread(target=export_data)
-    x.start()
-    return redirect("/")\
+    p = subprocess.Popen(['python', './app/fileSelect.py'], stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                         universal_newlines=True)
+    out, err = p.communicate()
+    export_data(out.strip())
+    return redirect("/")
+
 
 @app.route('/writetoemi', methods=['POST', 'GET'])
 def writetoemi():
-    p = subprocess.Popen(['python', './app/fileSelect.py'], stdin=subprocess.PIPE, stdout=subprocess.PIPE, universal_newlines=True)
+    p = subprocess.Popen(['python', './app/fileSelect.py'], stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                         universal_newlines=True)
     out, err = p.communicate()
-    print(out.strip())
+    # print(out.strip())
     export_data_emi(out.strip())
-    #x = threading.Thread(target=export_data_emi)
-    #x.start()
-    #x.join()
     return redirect("/")
+
 
 @app.route('/remove/<timestamp>', methods=['POST', 'GET'])
 def remove(timestamp):
@@ -99,6 +110,29 @@ def remove(timestamp):
     db.session.delete(vc)
     db.session.commit()
     return redirect("/")
+
+
+@app.route('/duplication/<timestamp>', methods=['POST', 'GET'])
+def duplication(timestamp):
+    return render_template("/duplicate.html", old=timestamp)
+
+
+@app.route('/duplicate/<old>', methods=['POST', 'GET'])
+def duplicate(old):
+    new_date = request.form['newdate']
+    old = convert_timestamp(old)
+    conf = ValveConfiguration.query.filter_by(timestamp=old).first()
+    year = int(new_date[0:4])
+    month = int(new_date[5:7])
+    day = int(new_date[8:10])
+    date = datetime.date(year, month, day)
+    time = datetime.time(old.hour, old.minute, old.second)
+    new_stamp = datetime.datetime.combine(date, time)
+    vc = ValveConfiguration(timestamp=new_stamp, status=conf.status)
+    db.session.add(vc)
+    db.session.commit()
+    return redirect("/")
+
 
 @app.route('/overview')
 def overview():
