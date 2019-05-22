@@ -3,3 +3,4 @@ flask_restful
 Flask-SQLAlchemy
 flask-migrate
 python-dotenv
+bitarray
