@@ -1,0 +1,13 @@
+{% extends "template.html" %}
+{% block content %}
+    <div>
+        <form action="/writetocsv" method="post">
+            To export data as CSV, click here.
+            <input type="submit" value="Export!">
+        </form>
+        <form action="/writetoemi" method="post">
+            To export data as emi, click here.
+            <input type="submit" value="Export!">
+        </form>
+    </div>
+{% endblock %}
