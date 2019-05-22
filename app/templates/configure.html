@@ -39,13 +39,13 @@
                                         {% if valvenumbers[(f*8)+v] in nrs %}
                                             <input type="checkbox"
                                                    name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }}
-                                                   id={{ valvenumbers[(f*8)+v] }}checked>
+                                                   id={{ valvenumbers[(f*8)+v] }} checked>
                                             {{ valves[v] }}<br>
                                         {% else %}
                                             <input type="checkbox"
                                                    name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }}
-                                                   id={{ valvenumbers[(f*8)+v] }}
-                                                           {{ valves[v] }}<br>
+                                                   id={{ valvenumbers[(f*8)+v] }}>
+                                            {{ valves[v] }}<br>
                                         {% endif %}
                                     {% endfor %}
                                 </div>
@@ -80,7 +80,7 @@
                                         {% if valvenumbers[(f*8)+v] in nrs %}
                                             <input type="checkbox"
                                                    name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }}
-                                                   id={{ valvenumbers[(f*8)+v] }}checked>
+                                                   id={{ valvenumbers[(f*8)+v] }} checked>
                                             {{ valves[v] }}<br>
                                         {% else %}
                                             <input type="checkbox"
