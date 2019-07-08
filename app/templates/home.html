@@ -4,7 +4,7 @@
 <div class="row">
     <div class="col-xl-3 col-md-6 mb-4">
         <a>To start configuration, please enter a date and time below.</a>
-        <form action="/configure" method="post">
+        <form action="/configure" method="post" name="configForm">
 
             <div>
                 <input type="datetime-local" step=1 name="datetime">
@@ -19,9 +19,9 @@
         {% if times, stats %}
             <div class="scroller">
                 {% for i in range(size) %}
-                    <button type="button" class="btn btn-secondary" data-toggle="tooltip" data-html="true"
+                    <button type="button" class="btn btn-secondary" onclick="window.location.href = '/configure/{{ times[i] }}';" data-toggle="tooltip" data-html="true"
                             data-placement="top"
-                            title={{ stats[i] }}>
+                            title={{ stats[i] }} >
                         {{ times[i] }}
                     </button>
                     <a href="/remove/{{ times[i] }}">Remove</a>

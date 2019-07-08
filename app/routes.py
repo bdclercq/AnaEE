@@ -32,9 +32,13 @@ def home():
                            valvenumbers=vn)
 
 
-@app.route('/configure', methods=['POST', 'GET'])
-def configure():
-    tmstmp = request.form['datetime']
+@app.route('/configure/<timestmp>', methods=['POST', 'GET'])
+@app.route('/configure/', methods=['POST', 'GET'])
+def configure(timestmp=None):
+    if timestmp is None:
+        tmstmp = request.form['datetime']
+    else:
+        tmstmp = timestmp
     timestamp = convert_timestamp(tmstmp)
     exists = db.session.query(ValveConfiguration.timestamp).filter_by(timestamp=timestamp).scalar() is not None
     if exists:
