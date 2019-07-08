@@ -1,8 +1,8 @@
-"""update
+"""ini
 
-Revision ID: 96ce9b408a6f
+Revision ID: a89ec4490d69
 Revises: 
-Create Date: 2019-04-26 16:00:54.730784
+Create Date: 2019-07-08 10:54:10.342454
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '96ce9b408a6f'
+revision = 'a89ec4490d69'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -21,7 +21,8 @@ def upgrade():
     op.create_table('valve_configuration',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('timestamp', sa.DateTime(), nullable=False),
-    sa.Column('status', sa.BLOB(), nullable=False),
+    sa.Column('status', sa.String(length=96), nullable=False),
+    sa.Column('configType', sa.Integer(), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
     # ### end Alembic commands ###

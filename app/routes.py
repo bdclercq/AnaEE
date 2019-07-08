@@ -1,5 +1,5 @@
 import subprocess
-import threading
+import json
 
 from flask import render_template, request, redirect
 
@@ -11,11 +11,13 @@ fs = ['fati1', 'fati2', 'fati3', 'fati4', 'fati5', 'fati6', 'fati7', 'fati8',
       'fati9', 'fati10', 'fati11', 'fati12']
 vs = []
 vn = []
+bs2 = ""
 for i in range(1, 97):
     name = "valve"
     name = name + str(i)
     vs.append(name)
     vn.append(i)
+    bs2 += "0"
     ##############################
 
 
@@ -54,15 +56,18 @@ def configure(timestmp=None):
 def commit_config(timestamp):
     if request.method == 'POST':
         result = request.form
+        generate_end = False
+        if len(result.getlist("generateEnd")) > 0:
+            generate_end = True
         timestamp = convert_timestamp(timestamp)
-        print(result)
+        # print(result)
         checked_valves = []
         for v in vs:
-            print(result.getlist(v))
+            # print(result.getlist(v))
             if len(result.getlist(v)) > 0:
                 for vi in range(len(result.getlist(v))):
                     checked_valves.append(int(result.getlist(v)[vi]))
-        print(checked_valves)
+        # print(checked_valves)
         ##############################
         bs = ''
         for i in range(1, 97):
@@ -70,12 +75,19 @@ def commit_config(timestamp):
                 bs = bs + '1'
             else:
                 bs = bs + '0'
-        print(bs)
+        # print(bs)
+        # print(bs2)
         ##############################
         exists = db.session.query(ValveConfiguration.timestamp).filter_by(timestamp=timestamp).scalar() is not None
         if not exists:
             vc = ValveConfiguration(timestamp=timestamp, status=bs)
+            # print(timestamp)
             db.session.add(vc)
+            db.session.commit()
+            timestamp = timestamp + datetime.timedelta(seconds=int(json.load(open("app/misc.json", 'r'))["settings"]["on_time"]))
+            # print(timestamp)
+            vc2 = ValveConfiguration(timestamp=timestamp, status=bs2, configtype=0)
+            db.session.add(vc2)
             db.session.commit()
         else:
             config = ValveConfiguration.query.filter_by(timestamp=timestamp).first()
@@ -142,7 +154,7 @@ def duplicate(old):
 def overview():
     data = {}
     confs = ValveConfiguration.query.order_by(ValveConfiguration.timestamp).all()
-    print(len(confs))
+    # print(len(confs))
     for conf in confs:
         year, month, day = getDate(conf.timestamp)
         if year not in data:
@@ -159,13 +171,40 @@ def overview():
         status = conf.status
         for i in range(96):
             if status[i] == '1':
-                print(1)
+                # print(1)
                 if data[year][month][day][i]['latest'] == 0:
                     data[year][month][day][i]['latest'] = time
             elif status[i] == '0':
-                print(0)
+                # print(0)
                 if data[year][month][day][i]['latest'] != 0:
                     data[year][month][day][i]['value'] = diff(time, data[year][month][day][i]['latest'])
                     data[year][month][day][i]['latest'] = 0
-    print(data)
+    # print(data)
     return redirect("/")
+
+
+@app.route('/misc', methods=['POST', 'GET'])
+def misc():
+    data = json.load(open("app/misc.json", 'r'))
+    print(data)
+    return render_template("misc.html", data=data)
+
+
+@app.route('/change_misc', methods=['POST'])
+def change_misc():
+    if request.method == 'POST':
+        on_time = request.form['on_time']
+        move_days = request.form['move_days']
+        data = json.load(open("app/misc.json", 'r'))
+        on_diff = int(on_time) - int(data["settings"]["on_time"])
+        vcs = ValveConfiguration.query.order_by(ValveConfiguration.timestamp).all()
+        for vc in vcs:
+            if vc.configtype == 0:
+                vc.timestamp = vc.timestamp - datetime.timedelta(seconds=int(on_diff))
+                db.session.commit()
+        data["settings"]["on_time"] = on_time
+        data["settings"]["move_days"] = move_days
+        json.dump(data, open("app/misc.json", 'w'))
+        return redirect("/misc")
+    else:
+        return redirect("/misc")
