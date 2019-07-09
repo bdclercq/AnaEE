@@ -216,21 +216,27 @@ def change_misc():
 @app.route('/shift_entries', methods=["POST"])
 def shift_entries():
     result = request.form.to_dict()
+    print(result)
     print(len(result.items()))
-    if len(list(result.items())) <= 1 or len(list(result.items())) >= 3:
+    if len(list(result.items())) <= 2 or len(list(result.items())) >= 4:
         err = "Too many items checked at once"
         return render_template('400.html', err=err)
 
     key, val = list(result.items())[0]
     key2, val2 = list(result.items())[1]
+    action = list(result.items())[2]
+    print(action)
+    print(type(action))
     vcs = ValveConfiguration.query\
                             .filter(ValveConfiguration.timestamp >= convert_timestamp(key))\
                             .filter(ValveConfiguration.timestamp <= convert_timestamp(key2))\
                             .order_by(desc(ValveConfiguration.timestamp)).all()
-
-    for vc in vcs:
-        vc.timestamp += datetime.timedelta(
-            days=int(json.load(open("app/misc.json", 'r'))["settings"]["move_days"]))
-        print(vc)
-        db.session.commit()
+    if action[1] == "Shift":
+        for vc in vcs:
+            vc.timestamp += datetime.timedelta(
+                days=int(json.load(open("app/misc.json", 'r'))["settings"]["move_days"]))
+            print(vc)
+            db.session.commit()
+    if action == "move":
+        pass
     return redirect('/')

@@ -18,7 +18,7 @@
         <a>Data stored in the database</a>
         {% if times, stats %}
             <form action="/shift_entries" method="post">
-                <div class="scroller">
+                <div style="overflow-y: scroll; height:500px;">
                 {% for i in range(size) %}
                     <input type="checkbox" name={{ times[i] }} value={{ stats[i] }}><br>
                     <button type="button" class="btn btn-secondary" onclick="window.location.href = '/configure/{{ times[i] }}';" data-toggle="tooltip" data-html="true"
@@ -30,7 +30,8 @@
                     <a href="/duplication/{{ times[i] }}">Duplicate</a><br>
                 {% endfor %}
                 </div>
-            <input type="submit" value="Shift entries from selected entry on">
+            <input type="submit" name="action" value="Shift">
+            <input type="submit" name="action" value="Move">
             </form>
         {% endif %}
     </div>
