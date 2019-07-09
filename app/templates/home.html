@@ -17,8 +17,10 @@
     <div class="col-xl-3 col-md-6 mb-4">
         <a>Data stored in the database</a>
         {% if times, stats %}
-            <div class="scroller">
+            <form action="/shift_entries" method="post">
+                <div class="scroller">
                 {% for i in range(size) %}
+                    <input type="checkbox" name={{ times[i] }} value={{ stats[i] }}><br>
                     <button type="button" class="btn btn-secondary" onclick="window.location.href = '/configure/{{ times[i] }}';" data-toggle="tooltip" data-html="true"
                             data-placement="top"
                             title={{ stats[i] }} >
@@ -27,7 +29,9 @@
                     <a href="/remove/{{ times[i] }}">Remove</a>
                     <a href="/duplication/{{ times[i] }}">Duplicate</a><br>
                 {% endfor %}
-            </div>
+                </div>
+            <input type="submit" value="Shift entries from selected entry on">
+            </form>
         {% endif %}
     </div>
 </div>

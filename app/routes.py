@@ -2,6 +2,7 @@ import subprocess
 import json
 
 from flask import render_template, request, redirect
+from sqlalchemy import desc
 
 from app import app, db
 from app.AnaEEUtils import *
@@ -28,7 +29,8 @@ def home():
     times = []
     statuses = []
     for vc in vcs:
-        times.append(str(vc.timestamp))
+        s = convert_to_html_timestamp(vc.timestamp)
+        times.append(s)
         statuses.append(vc.status)
     return render_template('home.html', size=len(times), times=times, stats=statuses, fatis=fs, valves=vs,
                            valvenumbers=vn)
@@ -84,11 +86,12 @@ def commit_config(timestamp):
             # print(timestamp)
             db.session.add(vc)
             db.session.commit()
-            timestamp = timestamp + datetime.timedelta(seconds=int(json.load(open("app/misc.json", 'r'))["settings"]["on_time"]))
-            # print(timestamp)
-            vc2 = ValveConfiguration(timestamp=timestamp, status=bs2, configtype=0)
-            db.session.add(vc2)
-            db.session.commit()
+            if generate_end:
+                timestamp = timestamp + datetime.timedelta(seconds=int(json.load(open("app/misc.json", 'r'))["settings"]["on_time"]))
+                # print(timestamp)
+                vc2 = ValveConfiguration(timestamp=timestamp, status=bs2, configtype=0)
+                db.session.add(vc2)
+                db.session.commit()
         else:
             config = ValveConfiguration.query.filter_by(timestamp=timestamp).first()
             config.status = bs
@@ -208,3 +211,26 @@ def change_misc():
         return redirect("/misc")
     else:
         return redirect("/misc")
+
+
+@app.route('/shift_entries', methods=["POST"])
+def shift_entries():
+    result = request.form.to_dict()
+
+    if len(list(result.items())) > 2:
+        err = "Too many items checked at once"
+        return render_template('400.html', err=err)
+
+    key, val = list(result.items())[0]
+    key2, val2 = list(result.items())[1]
+    vcs = ValveConfiguration.query\
+                            .filter(ValveConfiguration.timestamp >= convert_timestamp(key))\
+                            .filter(ValveConfiguration.timestamp <= convert_timestamp(key2))\
+                            .order_by(desc(ValveConfiguration.timestamp)).all()
+
+    for vc in vcs:
+        vc.timestamp += datetime.timedelta(
+            days=int(json.load(open("app/misc.json", 'r'))["settings"]["move_days"]))
+        print(vc)
+        db.session.commit()
+    return redirect('/')

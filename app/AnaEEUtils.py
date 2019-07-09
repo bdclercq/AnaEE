@@ -12,10 +12,13 @@ def convert_to_emi(val):
     return inv
 
 
-def strip_micro_seconds(timestamp):
+def convert_to_html_timestamp(timestamp):
     date = datetime.date(timestamp.year, timestamp.month, timestamp.day)
     time = datetime.time(timestamp.hour, timestamp.minute, timestamp.second)
-    return datetime.datetime.combine(date, time)
+    s = date.isoformat()
+    s += "T"
+    s += time.isoformat()
+    return s
 
 '''
 Export data to emi format
