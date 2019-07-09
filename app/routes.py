@@ -216,8 +216,8 @@ def change_misc():
 @app.route('/shift_entries', methods=["POST"])
 def shift_entries():
     result = request.form.to_dict()
-
-    if len(list(result.items())) > 2:
+    print(len(result.items()))
+    if len(list(result.items())) <= 1 or len(list(result.items())) >= 3:
         err = "Too many items checked at once"
         return render_template('400.html', err=err)
 
