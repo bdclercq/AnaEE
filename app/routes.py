@@ -200,10 +200,12 @@ def change_misc():
         move_days = request.form['move_days']
         data = json.load(open("app/misc.json", 'r'))
         on_diff = int(on_time) - int(data["settings"]["on_time"])
+        print(on_time, data["settings"]["on_time"], on_diff)
         vcs = ValveConfiguration.query.order_by(ValveConfiguration.timestamp).all()
         for vc in vcs:
             if vc.configtype == 0:
-                vc.timestamp = vc.timestamp - datetime.timedelta(seconds=int(on_diff))
+                print(vc.timestamp, vc.timestamp + datetime.timedelta(seconds=int(on_diff)))
+                vc.timestamp = vc.timestamp + datetime.timedelta(seconds=int(on_diff))
                 db.session.commit()
         data["settings"]["on_time"] = on_time
         data["settings"]["move_days"] = move_days
