@@ -5,7 +5,7 @@
 
         <form action="/change_misc" method="post">
         Delta for valves (in seconds): <input type="text" name="on_time" value="{{ data["settings"]["on_time"] }}"><br>
-        Delta for shift (in days): <input type="text" name="move_days" value="{{ data["settings"]["shift_days"] }}"><br>
+        Delta for shift (in days): <input type="text" name="shift_days" value="{{ data["settings"]["shift_days"] }}"><br>
         Delta for move (in days): <input type="text" name="move_days" value="{{ data["settings"]["move_days"] }}"><br>
         <input type="submit" value="Submit">
         </form>
