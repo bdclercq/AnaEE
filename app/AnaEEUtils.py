@@ -203,7 +203,11 @@ Returns the date of a timestamp
 
 
 def getDate(timestamp):
-    return timestamp.year, timestamp.month, timestamp.day
+    return datetime.date(timestamp.year, timestamp.month, timestamp.day)
+
+
+def getTime(timestamp):
+    return datetime.time(timestamp.hour, timestamp.minute, timestamp.second)
 
 
 def diff(t1, t2):

@@ -1,0 +1,31 @@
+{% extends "template.html" %}
+{% block content %}
+
+    {% if data %}
+        <div style="overflow-y: scroll; height:340px; width:500px;">
+
+            <table>
+                {% for k in data.keys() %}
+                    <tr>
+                        <td bgcolor="#a9a9a9" style="color:white">{{ k }}</td>
+                        {% for f in data[k].keys() %}
+                            <tr>
+                                <td>Fati {{ f }}</td>
+                                {% for v in data[k][f].keys() %}
+                                    {% if data[k][f][v]['run_time'] == target %}
+                                        <td bgcolor="#7fff00">{{ data[k][f][v]['run_time'] }}</td>
+                                    {% else %}
+                                        <td bgcolor="#dc143c">{{ data[k][f][v]['run_time'] }}</td>
+                                    {% endif %}
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </table>
+
+        </div>
+
+    {% endif %}
+
+{% endblock %}

@@ -155,35 +155,63 @@ def duplicate(old):
 
 @app.route('/overview')
 def overview():
+    target = 1210
     data = {}
     confs = ValveConfiguration.query.order_by(ValveConfiguration.timestamp).all()
     # print(len(confs))
     for conf in confs:
-        year, month, day = getDate(conf.timestamp)
-        if year not in data:
-            data[year] = {}
-        if month not in data[year]:
-            data[year][month] = {}
-        if day not in data[year][month]:
-            data[year][month][day] = {}
-            for v in range(96):
-                data[year][month][day][v] = {}
-                data[year][month][day][v]['latest'] = 0
-                data[year][month][day][v]['value'] = 0
-        time = conf.timestamp.time
+        stamp = conf.timestamp
+        date = getDate(stamp)
+        if date not in data.keys():
+            data[date] = {}
         status = conf.status
-        for i in range(96):
-            if status[i] == '1':
-                # print(1)
-                if data[year][month][day][i]['latest'] == 0:
-                    data[year][month][day][i]['latest'] = time
-            elif status[i] == '0':
-                # print(0)
-                if data[year][month][day][i]['latest'] != 0:
-                    data[year][month][day][i]['value'] = diff(time, data[year][month][day][i]['latest'])
-                    data[year][month][day][i]['latest'] = 0
-    # print(data)
-    return redirect("/")
+        time = getTime(stamp)
+        stamp = datetime.datetime.combine(date, time)
+        for f in range(12):
+            if f not in data[date].keys():
+                data[date][f] = {}
+            for v in range(8):
+                if v not in data[date][f].keys():
+                    data[date][f][v] = {}
+                    data[date][f][v]['run_time'] = 0
+                    data[date][f][v]['started_on'] = 0
+                    data[date][f][v]['running'] = False
+                if status[(f*8)+v] == '0':
+                    if not data[date][f][v]['running']:
+                        # Status of valve is 0, valve wasn't running: we don't have to record anything
+                        pass
+                    else:
+                        # Valve was running, status changed to 'off': turn off valve and update records
+                        data[date][f][v]['running'] = False
+                        data[date][f][v]['run_time'] = (stamp - data[date][f][v]['started_on']).seconds
+                        data[date][f][v]['started_on'] = 0
+                elif status[(f*8)+v] == '1':
+                    if not data[date][f][v]['running']:
+                        # Valve was not running, status changed to 'on': turn on valve and update records
+                        data[date][f][v]['running'] = True
+                        if data[date][f][v]['started_on'] == 0:
+                            data[date][f][v]['started_on'] = stamp
+                    else:
+                        # Valve is running, status is 'on': we don't have to do anythin
+                        pass
+                else:
+                    err = "Oops, something went wrong.\n Encountered a status that is neither 1 or 0."
+                    return render_template('400.html', err=err)
+    # list_key_value = [[k, v] for k, v in data.items()]
+    # for i in list_key_value:
+    #     print(i)
+    # for k in data.keys():
+    #     # print("date ", k)
+    #     for f in data[k].keys():
+    #         # print("fati ", f)
+    #         for v in data[k][f].keys():
+    #             # print("valve ", v)
+    #             if data[k][f][v]['run_time'] > 0:
+    #                 print(k, ", ", f, ", ", v, ", ", 'run_time', data[k][f][v]['run_time'])
+    #             # for d in data[k][f][v].keys():
+    #             #     print(d, data[k][f][v][d])
+
+    return render_template('overview.html', data=data, target=target)
 
 
 @app.route('/misc', methods=['POST', 'GET'])
