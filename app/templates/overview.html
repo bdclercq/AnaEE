@@ -1,6 +1,18 @@
 {% extends "template.html" %}
 {% block content %}
 
+    <style>
+    /* basic positioning */
+        .legend { list-style: none; }
+        .legend li { float: left; margin-right: 10px; }
+        .legend span { border: 1px solid #ccc; float: left; width: 12px; height: 12px; margin: 2px; }
+        /* your colors */
+        .legend .between { background-color: {{ colors["between_color"] }}; }
+        .legend .smaller { background-color: {{ colors["smaller_color"] }}; }
+        .legend .bigger { background-color: {{ colors["bigger_color"] }}; }
+        .legend .equal_max { background-color: {{ colors["equal_color"] }}; }
+    </style>
+
     {% if data %}
         <div style="overflow-y: scroll; height:340px; width:500px;">
 
@@ -12,10 +24,14 @@
                             <tr>
                                 <td>Fati {{ f }}</td>
                                 {% for v in data[k][f].keys() %}
-                                    {% if data[k][f][v]['run_time'] == target %}
-                                        <td bgcolor="#7fff00">{{ data[k][f][v]['run_time'] }}</td>
-                                    {% else %}
-                                        <td bgcolor="#dc143c">{{ data[k][f][v]['run_time'] }}</td>
+                                    {% if (data[k][f][v]['run_time'] >= limits['min_target'] and data[k][f][v]['run_time'] <= limits['max_target']) %}
+                                        <td bgcolor="{{ colors["between_color"] }}">{{ data[k][f][v]['run_time'] }}</td>
+                                    {% elif data[k][f][v]['run_time'] <= limits['min_target'] %}
+                                        <td bgcolor="{{ colors["smaller_color"] }}">{{ data[k][f][v]['run_time'] }}</td>
+                                    {% elif data[k][f][v]['run_time'] >= limits['max_target'] %}
+                                        <td bgcolor="{{ colors["bigger_color"] }}">{{ data[k][f][v]['run_time'] }}</td>
+                                    {% elif data[k][f][v]['run_time'] == limits['max_target'] %}
+                                        <td bgcolor="{{ colors["equal_color"] }}">{{ data[k][f][v]['run_time'] }}</td>
                                     {% endif %}
                                 {% endfor %}
                             </tr>
@@ -24,6 +40,14 @@
                 {% endfor %}
             </table>
 
+        </div>
+        <div>
+            <ul class="legend">
+                <li><span class="smaller"></span> Smaller than the minimum limit</li>
+                <li><span class="between"></span> Between the minimum and maximum limit</li>
+                <li><span class="bigger"></span> Bigger than the maximum limit</li>
+                <li><span class="equal_max"></span> Exactly the maximum limit</li>
+            </ul>
         </div>
 
     {% endif %}

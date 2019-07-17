@@ -1,1 +1,1 @@
-{"settings": {"on_time": "110", "shift_days": "-10", "move_days": "120"}}
+{"settings": {"on_time": "110", "shift_days": "-10", "move_days": "120", "min_rate": "25", "max_rate": "250", "smaller_color": "#ac143d", "between_color": "#ff8c00", "bigger_color": "#bf7f50", "equal_color": "#7fff00"}}

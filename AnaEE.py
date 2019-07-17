@@ -1,1 +1,2 @@
-from app import app
+#!/usr/bin/python3
+# from app import app

@@ -155,7 +155,9 @@ def duplicate(old):
 
 @app.route('/overview')
 def overview():
-    target = 1210
+    figs = json.load(open("app/misc.json", 'r'))
+    bounds = {'min_target': int(figs["settings"]["min_rate"]), 'max_target': int(figs["settings"]["max_rate"])}
+    colors = {'smaller_color': figs["settings"]["smaller_color"], 'bigger_color': figs["settings"]["bigger_color"], 'equal_color': figs["settings"]["equal_color"], 'between_color': figs["settings"]["between_color"]}
     data = {}
     confs = ValveConfiguration.query.order_by(ValveConfiguration.timestamp).all()
     # print(len(confs))
@@ -197,21 +199,7 @@ def overview():
                 else:
                     err = "Oops, something went wrong.\n Encountered a status that is neither 1 or 0."
                     return render_template('400.html', err=err)
-    # list_key_value = [[k, v] for k, v in data.items()]
-    # for i in list_key_value:
-    #     print(i)
-    # for k in data.keys():
-    #     # print("date ", k)
-    #     for f in data[k].keys():
-    #         # print("fati ", f)
-    #         for v in data[k][f].keys():
-    #             # print("valve ", v)
-    #             if data[k][f][v]['run_time'] > 0:
-    #                 print(k, ", ", f, ", ", v, ", ", 'run_time', data[k][f][v]['run_time'])
-    #             # for d in data[k][f][v].keys():
-    #             #     print(d, data[k][f][v][d])
-
-    return render_template('overview.html', data=data, target=target)
+    return render_template('overview.html', data=data, limits=bounds, colors=colors)
 
 
 @app.route('/misc', methods=['POST', 'GET'])
@@ -225,8 +213,6 @@ def misc():
 def change_misc():
     if request.method == 'POST':
         on_time = request.form['on_time']
-        shift_days = request.form['shift_days']
-        move_days = request.form['move_days']
         data = json.load(open("app/misc.json", 'r'))
         on_diff = int(on_time) - int(data["settings"]["on_time"])
         print(on_time, data["settings"]["on_time"], on_diff)
@@ -237,8 +223,14 @@ def change_misc():
                 vc.timestamp = vc.timestamp + datetime.timedelta(seconds=int(on_diff))
                 db.session.commit()
         data["settings"]["on_time"] = on_time
-        data["settings"]["shift_days"] = shift_days
-        data["settings"]["move_days"] = move_days
+        data["settings"]["shift_days"] = request.form['shift_days']
+        data["settings"]["move_days"] = request.form['move_days']
+        data["settings"]["min_rate"] = request.form['min_rate']
+        data["settings"]["max_rate"] = request.form['max_rate']
+        data["settings"]["smaller_color"] = request.form['smaller_color']
+        data["settings"]["bigger_color"] = request.form['bigger_color']
+        data["settings"]["between_color"] = request.form['between_color']
+        data["settings"]["equal_color"] = request.form['equal_color']
         json.dump(data, open("app/misc.json", 'w'))
         return redirect("/misc")
     else:
