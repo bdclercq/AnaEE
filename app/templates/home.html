@@ -32,8 +32,12 @@
                     <a href="/duplication/{{ times[i] }}">Duplicate</a><br>
                 {% endfor %}
                 </div>
-            <input type="submit" name="action" value="Shift">
-            <input type="submit" name="action" value="Move">
+            <input type="submit" name="action" value="Shift" data-toggle="tooltip" data-html="true"
+                            data-placement="top"
+                            title="By clicking this button, all records following the selected record will be shifted." >
+            <input type="submit" name="action" value="Move" data-toggle="tooltip" data-html="true"
+                            data-placement="top"
+                            title="By clicking this button, all records between the selected records will be duplicated.">
             </form>
             <button type="button" class="btn btn-secondary" onclick="window.location.href = '/clearall';">
                 Clear database
