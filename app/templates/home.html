@@ -3,6 +3,7 @@
 
 <div class="row">
     <div class="col-xl-3 col-md-6 mb-4">
+        <h1>Configuration timestamp</h1>
         <a>To start configuration, please enter a date and time below.</a>
         <form action="/configure" method="post" name="configForm">
 
@@ -10,13 +11,14 @@
                 <input type="datetime-local" step=1 name="datetime">
             </div>
 
-            <input type="submit" value="Commit">
+            <input type="submit" value="Submit">
         </form>
     </div>
 
+
     <div class="col-xl-3 col-md-6 mb-4">
-        <a>Data stored in the database</a>
-        {% if times, stats %}
+        <a>Data stored in the database</a><br>
+        {% if size > 0 %}
             <form action="/shift_entries" method="post">
                 <div style="overflow-y: scroll; height:500px;">
                 {% for i in range(size) %}
@@ -33,6 +35,11 @@
             <input type="submit" name="action" value="Shift">
             <input type="submit" name="action" value="Move">
             </form>
+            <button type="button" class="btn btn-secondary" onclick="window.location.href = '/clearall';">
+                Clear database
+            </button>
+        {% else %}
+            Nothing committed yet.
         {% endif %}
     </div>
 </div>

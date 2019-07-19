@@ -87,7 +87,8 @@ def commit_config(timestamp):
             db.session.add(vc)
             db.session.commit()
             if generate_end:
-                timestamp = timestamp + datetime.timedelta(seconds=int(json.load(open("app/misc.json", 'r'))["settings"]["on_time"]))
+                timestamp = timestamp + datetime.timedelta(
+                    seconds=int(json.load(open("app/misc.json", 'r'))["settings"]["on_time"]))
                 # print(timestamp)
                 vc2 = ValveConfiguration(timestamp=timestamp, status=bs2, configtype=0)
                 db.session.add(vc2)
@@ -131,6 +132,15 @@ def remove(timestamp):
     return redirect("/")
 
 
+@app.route('/clearall', methods=['POST', 'GET'])
+def clearall():
+    vcs = ValveConfiguration.query.order_by(ValveConfiguration.timestamp).all()
+    for vc in vcs:
+        db.session.delete(vc)
+        db.session.commit()
+    return redirect("/")
+
+
 @app.route('/duplication/<timestamp>', methods=['POST', 'GET'])
 def duplication(timestamp):
     return render_template("/duplicate.html", old=timestamp)
@@ -157,7 +167,8 @@ def duplicate(old):
 def overview():
     figs = json.load(open("app/misc.json", 'r'))
     bounds = {'min_target': int(figs["settings"]["min_rate"]), 'max_target': int(figs["settings"]["max_rate"])}
-    colors = {'smaller_color': figs["settings"]["smaller_color"], 'bigger_color': figs["settings"]["bigger_color"], 'equal_color': figs["settings"]["equal_color"], 'between_color': figs["settings"]["between_color"]}
+    colors = {'smaller_color': figs["settings"]["smaller_color"], 'bigger_color': figs["settings"]["bigger_color"],
+              'equal_color': figs["settings"]["equal_color"], 'between_color': figs["settings"]["between_color"]}
     data = {}
     confs = ValveConfiguration.query.order_by(ValveConfiguration.timestamp).all()
     # print(len(confs))
@@ -178,16 +189,16 @@ def overview():
                     data[date][f][v]['run_time'] = 0
                     data[date][f][v]['started_on'] = 0
                     data[date][f][v]['running'] = False
-                if status[(f*8)+v] == '0':
+                if status[(f * 8) + v] == '0':
                     if not data[date][f][v]['running']:
                         # Status of valve is 0, valve wasn't running: we don't have to record anything
                         pass
                     else:
                         # Valve was running, status changed to 'off': turn off valve and update records
                         data[date][f][v]['running'] = False
-                        data[date][f][v]['run_time'] = (stamp - data[date][f][v]['started_on']).seconds
+                        data[date][f][v]['run_time'] += (stamp - data[date][f][v]['started_on']).seconds
                         data[date][f][v]['started_on'] = 0
-                elif status[(f*8)+v] == '1':
+                elif status[(f * 8) + v] == '1':
                     if not data[date][f][v]['running']:
                         # Valve was not running, status changed to 'on': turn on valve and update records
                         data[date][f][v]['running'] = True
@@ -215,7 +226,6 @@ def change_misc():
         on_time = request.form['on_time']
         data = json.load(open("app/misc.json", 'r'))
         on_diff = int(on_time) - int(data["settings"]["on_time"])
-        print(on_time, data["settings"]["on_time"], on_diff)
         vcs = ValveConfiguration.query.order_by(ValveConfiguration.timestamp).all()
         for vc in vcs:
             if vc.configtype == 0:
@@ -267,10 +277,10 @@ def shift_entries():
             err = "Oops, something went wrong.\n"
             if action[1] == "Shift":
                 err += "You selected 2 items and clicked on 'Shift'. \n" \
-                      "Please select one item less or click 'Move' next time."
+                       "Please select one item less or click 'Move' next time."
             else:
                 err += "Something went wrong (@app.route('shift_entries'), Move entries part). \n" \
-                      "Are you sure you selected 2 items and clicked 'Move'?"
+                       "Are you sure you selected 2 items and clicked 'Move'?"
             return render_template('400.html', err=err)
     # Shit entries
     elif len(list(result.items())) == 2:
@@ -295,7 +305,7 @@ def shift_entries():
                        "Please select one item more or click 'Shift' next time."
             else:
                 err += "Something went wrong (@app.route('shift_entries'), Shift entries part). \n" \
-                      "Are you sure you selected 1 item and clicked 'Shift'?"
+                       "Are you sure you selected 1 item and clicked 'Shift'?"
             return render_template('400.html', err=err)
     # Return error
     else:

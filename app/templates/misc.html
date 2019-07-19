@@ -1,6 +1,9 @@
 {% extends "template.html" %}
 {% block content %}
 
+    <h1>Miscelaneous settings</h1>
+    <a>Here you can alter various values used within the interface.</a><br>
+    <br>
     {% if data %}
         <style>
             .smaller_sample{border: 1px solid #ccc; float: left; width: 12px; height: 12px; margin: 2px;}
@@ -19,9 +22,11 @@
             Color for values above the maximum limit: <input type="text" name="bigger_color" value="{{ data["settings"]["bigger_color"] }}"><div class="bigger_sample" style="background-color: {{ data["settings"]["bigger_color"] }};"></div><br>
             Color for values between the minimum and maximum limit: <input type="text" name="between_color" value="{{ data["settings"]["between_color"] }}"><div class="between_sample" style="background-color: {{ data["settings"]["between_color"] }};"></div><br>
             Color for values equal to the maximum limit: <input type="text" name="equal_color" value="{{ data["settings"]["equal_color"] }}"><div class="equal_sample" style="background-color: {{ data["settings"]["equal_color"] }};"></div><br>
-        <input type="submit" value="Submit">
+        <input type="submit" value="Save">
         </form>
 
+    {% else %}
+        <a>Something went wrong, please contact the person responsible for maintenance.</a>
 
     {% endif %}
 

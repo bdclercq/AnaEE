@@ -24,8 +24,6 @@ def convert_to_html_timestamp(timestamp):
 Export data to emi format
 '''
 def export_data_emi(filename):
-    # root = Tk()
-    # filename = filedialog.askopenfilename()
     if filename != '':
         # Open file in binary mode to avoid write bug
         f = open(filename, "wb")

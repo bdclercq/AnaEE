@@ -4,4 +4,3 @@ Flask-SQLAlchemy
 flask-migrate
 python-dotenv
 bitarray
-tkinter

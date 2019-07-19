@@ -14,9 +14,12 @@
     </style>
 
     {% if data %}
-        <div style="overflow-y: scroll; height:340px; width:500px;">
+        <h1>Overview</h1>
+        <a>Below is a day-by-day visual representation of the recorded configurations, color-coded according to the legend.</a><br>
+        <br>
+        <div style="overflow-y: scroll; height:500px; width:500px;">
 
-            <table>
+            <table border="1">
                 {% for k in data.keys() %}
                     <tr>
                         <td bgcolor="#a9a9a9" style="color:white">{{ k }}</td>
@@ -24,11 +27,11 @@
                             <tr>
                                 <td>Fati {{ f }}</td>
                                 {% for v in data[k][f].keys() %}
-                                    {% if (data[k][f][v]['run_time'] >= limits['min_target'] and data[k][f][v]['run_time'] <= limits['max_target']) %}
+                                    {% if (data[k][f][v]['run_time'] > limits['min_target'] and data[k][f][v]['run_time'] < limits['max_target']) %}
                                         <td bgcolor="{{ colors["between_color"] }}">{{ data[k][f][v]['run_time'] }}</td>
-                                    {% elif data[k][f][v]['run_time'] <= limits['min_target'] %}
+                                    {% elif data[k][f][v]['run_time'] < limits['min_target'] %}
                                         <td bgcolor="{{ colors["smaller_color"] }}">{{ data[k][f][v]['run_time'] }}</td>
-                                    {% elif data[k][f][v]['run_time'] >= limits['max_target'] %}
+                                    {% elif data[k][f][v]['run_time'] > limits['max_target'] %}
                                         <td bgcolor="{{ colors["bigger_color"] }}">{{ data[k][f][v]['run_time'] }}</td>
                                     {% elif data[k][f][v]['run_time'] == limits['max_target'] %}
                                         <td bgcolor="{{ colors["equal_color"] }}">{{ data[k][f][v]['run_time'] }}</td>
