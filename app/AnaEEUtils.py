@@ -1,9 +1,11 @@
 import binascii
 import datetime
+import csv
 
 from bitarray import bitarray
 
 from app.models import ValveConfiguration
+from app import app, db
 
 
 def convert_to_emi(val):
@@ -20,9 +22,12 @@ def convert_to_html_timestamp(timestamp):
     s += time.isoformat()
     return s
 
+
 '''
 Export data to emi format
 '''
+
+
 def export_data_emi(filename):
     if filename != '':
         # Open file in binary mode to avoid write bug
@@ -102,6 +107,8 @@ The output file will be a CSV file with following format:
 <sequence number>
 ...
 '''
+
+
 def export_data(filename):
     if filename != '':
         f = open(filename, "w+")
@@ -141,7 +148,8 @@ def export_data(filename):
             ### Add data
             data = conf.status
             j = 8
-            for i in range(len(data) / 8):
+            # print(len(data) / 8)
+            for i in range(int(len(data) / 8)):
                 byte = data[j - 8:j]
                 ba = bitarray('0' * 8, endian='little')
                 for it in range(len(byte)):
@@ -158,6 +166,79 @@ def export_data(filename):
                 f.write('\n')
         ##############################
         f.close()
+
+
+def import_data_csv(filename):
+    # print("testing, will open file ", filename, " now")
+    if filename != '':
+        # print("Opening file ", filename)
+        first = True
+        with open(filename, mode='r') as csv_file:
+            csv_reader = csv.DictReader(csv_file)
+            line_count = 0
+            record = {"id": 0, "year": 0, "month": 0, "day": 0, "hour": 0, "minute": 0, "second": 0, "f1": 0,
+                      "f2": 0, "f3": 0, "f4": 0, "f5": 0, "f6": 0, "f7": 0, "f8": 0, "f9": 0, "f10": 0,
+                      "f11": 0, "f12": 0, "status": 0}
+            keys = {"0": "id", "1": "year", "2": "month", "3": "day", "4": "hour", "5": "minute", "6": "second",
+                    "11": "f1", "12": "f2", "13": "f3", "14": "f4", "15": "f5", "16": "f6", "17": "f7", "18": "f8",
+                    "19": "f9", "20": "f10", "21": "f11", "22": "f12", "23": "status"}
+            for row in csv_reader:
+                if first:
+                    # print(row['1'])
+                    if line_count <= 5:
+                        record[keys[str(line_count+1)]] = row['1']
+                        line_count += 1
+                    elif 5 < line_count < 10:
+                        line_count += 1
+                    elif 10 <= line_count <= 22:
+                        record[keys[str(line_count+1)]] = row['1']
+                        line_count += 1
+                    elif 22 < line_count < 25:
+                        line_count += 1
+                    elif line_count == 25:
+                        print(record)
+                        date = datetime.date(int(record["year"]), int(record["month"]), int(record["day"]))
+                        time = datetime.time(int(record["hour"]), int(record["minute"]), int(record["second"]))
+                        timestamp = datetime.datetime.combine(date, time)
+                        bs = ''
+                        for i in range(11, 23):
+                            bs += "{0:08b}".format(int(record[keys[str(i)]]))
+                        bs += '0000000'
+                        # print(bs)
+                        vc = ValveConfiguration(timestamp=timestamp, status=bs)
+                        # print(timestamp)
+                        db.session.add(vc)
+                        db.session.commit()
+                        line_count = 0
+                        first = False
+                else:
+                    print(row['1'])
+                    print(line_count)
+                    if 0 <= line_count <= 6:
+                        record[keys[str(line_count)]] = row['1']
+                        line_count += 1
+                    elif 6 < line_count < 11:
+                        line_count += 1
+                    elif 11 <= line_count <= 23:
+                        record[keys[str(line_count)]] = row['1']
+                        line_count += 1
+                    elif 23 < line_count < 26:
+                        line_count += 1
+                    elif line_count == 26:
+                        print(record)
+                        date = datetime.date(int(record["year"]), int(record["month"]), int(record["day"]))
+                        time = datetime.time(int(record["hour"]), int(record["minute"]), int(record["second"]))
+                        timestamp = datetime.datetime.combine(date, time)
+                        bs = ''
+                        for i in range(11, 23):
+                            bs += "{0:08b}".format(int(record[keys[str(i)]]))
+                        bs += '0000000'
+                        # print(bs)
+                        vc = ValveConfiguration(timestamp=timestamp, status=bs)
+                        # print(timestamp)
+                        db.session.add(vc)
+                        db.session.commit()
+                        line_count = 0
 
 
 '''
@@ -189,7 +270,9 @@ Converts the data so it can be stored in the database
 def convert_data(data):
     prev_checked = []
     data = data.status
+    print(data)
     for i in range(1, 97):
+        print(i)
         if int(data[i - 1]) == 1:
             prev_checked.append(i)
     return prev_checked

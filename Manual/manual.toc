@@ -15,4 +15,5 @@
 \contentsline {subsection}{\numberline {3.6}Moving records}{10}{subsection.3.6}% 
 \contentsline {subsection}{\numberline {3.7}Visual validation}{11}{subsection.3.7}% 
 \contentsline {subsection}{\numberline {3.8}Export the data}{12}{subsection.3.8}% 
-\contentsline {subsection}{\numberline {3.9}Miscelaneous settings}{13}{subsection.3.9}% 
+\contentsline {subsection}{\numberline {3.9}Import the data}{13}{subsection.3.9}% 
+\contentsline {subsection}{\numberline {3.10}Miscellaneous settings}{14}{subsection.3.10}% 

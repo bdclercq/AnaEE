@@ -119,8 +119,22 @@ def writetoemi():
     p = subprocess.Popen(['python', './app/fileSelect.py'], stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                          universal_newlines=True)
     out, err = p.communicate()
-    # print(out.strip())
     export_data_emi(out.strip())
+    return redirect("/")
+
+
+@app.route('/importdata')
+def importdata():
+    return render_template('import.html')
+
+
+@app.route('/importcsv', methods=['POST', 'GET'])
+def importcsv():
+    p = subprocess.Popen(['python', './app/fileSelect.py'], stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                         universal_newlines=True)
+    out, err = p.communicate()
+    print(out.strip())
+    import_data_csv(out.strip())
     return redirect("/")
 
 
@@ -189,6 +203,7 @@ def overview():
                     data[date][f][v]['run_time'] = 0
                     data[date][f][v]['started_on'] = 0
                     data[date][f][v]['running'] = False
+                print((f * 8) + v)
                 if status[(f * 8) + v] == '0':
                     if not data[date][f][v]['running']:
                         # Status of valve is 0, valve wasn't running: we don't have to record anything

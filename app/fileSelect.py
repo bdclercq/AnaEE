@@ -3,13 +3,10 @@ try:
     from tkinter import *
 except ImportError:
     try:
-        import msvcrt
+        import tkFileDialog as filedialog
+        from Tkinter import *
     except ImportError:
-        try:
-            import tkFileDialog as filedialog
-            from Tkinter import *
-        except ImportError:
-            print("Fuck this, no exporting for you apparently.")
+        print("Fuck this, no exporting for you apparently.")
 import sys
 
 
