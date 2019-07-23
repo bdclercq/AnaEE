@@ -1,0 +1,12 @@
+{% extends "template.html" %}
+{% block content %}
+
+    {% if err %}
+
+        {{ err }}<br>
+        <button type="button" onclick="window.location.href = '/';">Return home</button>
+
+
+    {% endif %}
+
+{% endblock %}

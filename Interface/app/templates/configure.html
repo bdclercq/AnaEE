@@ -1,0 +1,519 @@
+{% extends "template.html" %}
+{% block content %}
+    <div>
+        <!-- /.container-fluid -->
+        {% if  timestamp %}
+{#            <input type="checkbox" name="generateEnd">Generate end stamp<br>#}
+            {% if data %}
+                Previous data found
+            {% else %}
+                Configuring for {{ timestamp }}
+            {% endif %}
+            <form action="/commit_config/{{ timestamp }}" method="post">
+                <input type="checkbox" name="generateEnd">Generate end stamp<br>
+                <div class="row">
+                    {% if data %}
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            {% for f in range(0,3) %}
+                                <a>{{ fatis[f] }}</a>
+                                <button id="cp" type="button" onclick='
+                                        var s = "";
+                                        {% for v in range(8) %}
+                                            if(document.getElementById({{ valvenumbers[(f*8)+v] }}).checked === true){
+                                            s += ({{ v }}+1).toString();
+                                            }
+                                        {% endfor %}
+                                        document.getElementById("values").innerHTML = s;
+                                        '>Copy
+                                </button>
+                                <button id="pst" type="button" onclick='
+                                    var s = document.getElementById("values");
+                                    var to_set = [];
+                                    for(var i = 0; i<s.innerHTML.length; i++){
+                                        var index = {{ f*8 }}+parseInt(s.innerHTML[i],10);
+                                        to_set.push(index);
+                                        document.getElementById(index).checked = true;
+                                    }
+                                    '>Mask
+                                </button>
+                                <button id="cp" type="button" onclick='
+                                    var s = "";
+                                    {% for v in range(8) %}
+                                        if(document.getElementById({{ valvenumbers[(f*8)+v] }}).checked === true){
+                                        document.getElementById({{ valvenumbers[(f*8)+v] }}).checked = false;
+                                        }
+                                    {% endfor %}
+                                    var s = document.getElementById("values");
+                                    var to_set = [];
+                                    for(var i = 0; i<s.innerHTML.length; i++){
+                                        var index = {{ f*8 }}+parseInt(s.innerHTML[i],10);
+                                        to_set.push(index);
+                                        document.getElementById(index).checked = true;
+                                    }
+                                    '>Paste
+                                </button>
+                                <button id="cp" type="button" onclick='
+                                        var s = "";
+                                        {% for v in range(8) %}
+                                            if(document.getElementById({{ valvenumbers[(f*8)+v] }}).checked === true){
+                                            document.getElementById({{ valvenumbers[(f*8)+v] }}).checked = false;
+                                            }
+                                        {% endfor %}
+                                        '>Clear
+                                </button><br>
+                                <div class="col-xl-3 col-md-6 mb-4">
+                                    {% for v in range(8) %}
+                                        {% if valvenumbers[(f*8)+v] in nrs %}
+                                            <input type="checkbox"
+                                                   name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }}
+                                                   id={{ valvenumbers[(f*8)+v] }} checked>
+                                            {{ valves[v] }}<br>
+                                        {% else %}
+                                            <input type="checkbox"
+                                                   name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }}
+                                                   id={{ valvenumbers[(f*8)+v] }}>
+                                            {{ valves[v] }}<br>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            {% for f in range(3,6) %}
+                                <a>{{ fatis[f] }}</a>
+                                <button id="cp" type="button" onclick='
+                                        var s = "";
+                                        {% for v in range(8) %}
+                                            if(document.getElementById({{ valvenumbers[(f*8)+v] }}).checked === true){
+                                            s += ({{ v }}+1).toString();
+                                            }
+                                        {% endfor %}
+                                        document.getElementById("values").innerHTML = s;
+                                        '>Copy
+                                </button>
+                                <button id="pst" type="button" onclick='
+                                    var s = document.getElementById("values");
+                                    var to_set = [];
+                                    for(var i = 0; i<s.innerHTML.length; i++){
+                                        var index = {{ f*8 }}+parseInt(s.innerHTML[i],10);
+                                        to_set.push(index);
+                                        document.getElementById(index).checked = true;
+                                    }
+                                    '>Mask
+                                </button>
+                                <button id="cp" type="button" onclick='
+                                    var s = "";
+                                    {% for v in range(8) %}
+                                        if(document.getElementById({{ valvenumbers[(f*8)+v] }}).checked === true){
+                                        document.getElementById({{ valvenumbers[(f*8)+v] }}).checked = false;
+                                        }
+                                    {% endfor %}
+                                    var s = document.getElementById("values");
+                                    var to_set = [];
+                                    for(var i = 0; i<s.innerHTML.length; i++){
+                                        var index = {{ f*8 }}+parseInt(s.innerHTML[i],10);
+                                        to_set.push(index);
+                                        document.getElementById(index).checked = true;
+                                    }
+                                    '>Paste
+                                </button>
+                                <button id="cp" type="button" onclick='
+                                        var s = "";
+                                        {% for v in range(8) %}
+                                            if(document.getElementById({{ valvenumbers[(f*8)+v] }}).checked === true){
+                                            document.getElementById({{ valvenumbers[(f*8)+v] }}).checked = false;
+                                            }
+                                        {% endfor %}
+                                        '>Clear
+                                </button><br>
+                                <div class="col-xl-3 col-md-6 mb-4">
+                                    {% for v in range(8) %}
+                                        {% if valvenumbers[(f*8)+v] in nrs %}
+                                            <input type="checkbox"
+                                                   name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }}
+                                                   id={{ valvenumbers[(f*8)+v] }} checked>
+                                            {{ valves[v] }}<br>
+                                        {% else %}
+                                            <input type="checkbox"
+                                                   name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }}
+                                                   id={{ valvenumbers[(f*8)+v] }}>
+                                            {{ valves[v] }}<br>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            {% for f in range(6,9) %}
+                                <a>{{ fatis[f] }}</a>
+                                <button id="cp" type="button" onclick='
+                                        var s = "";
+                                        {% for v in range(8) %}
+                                            if(document.getElementById({{ valvenumbers[(f*8)+v] }}).checked === true){
+                                            s += ({{ v }}+1).toString();
+                                            }
+                                        {% endfor %}
+                                        document.getElementById("values").innerHTML = s;
+                                        '>Copy
+                                </button>
+                                <button id="pst" type="button" onclick='
+                                    var s = document.getElementById("values");
+                                    var to_set = [];
+                                    for(var i = 0; i<s.innerHTML.length; i++){
+                                        var index = {{ f*8 }}+parseInt(s.innerHTML[i],10);
+                                        to_set.push(index);
+                                        document.getElementById(index).checked = true;
+                                    }
+                                    '>Mask
+                                </button>
+                                <button id="cp" type="button" onclick='
+                                    var s = "";
+                                    {% for v in range(8) %}
+                                        if(document.getElementById({{ valvenumbers[(f*8)+v] }}).checked === true){
+                                        document.getElementById({{ valvenumbers[(f*8)+v] }}).checked = false;
+                                        }
+                                    {% endfor %}
+                                    var s = document.getElementById("values");
+                                    var to_set = [];
+                                    for(var i = 0; i<s.innerHTML.length; i++){
+                                        var index = {{ f*8 }}+parseInt(s.innerHTML[i],10);
+                                        to_set.push(index);
+                                        document.getElementById(index).checked = true;
+                                    }
+                                    '>Paste
+                                </button>
+                                <button id="cp" type="button" onclick='
+                                        var s = "";
+                                        {% for v in range(8) %}
+                                            if(document.getElementById({{ valvenumbers[(f*8)+v] }}).checked === true){
+                                            document.getElementById({{ valvenumbers[(f*8)+v] }}).checked = false;
+                                            }
+                                        {% endfor %}
+                                        '>Clear
+                                </button><br>
+                                <div class="col-xl-3 col-md-6 mb-4">
+                                    {% for v in range(8) %}
+                                        {% if valvenumbers[(f*8)+v] in nrs %}
+                                            <input type="checkbox"
+                                                   name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }}
+                                                   id={{ valvenumbers[(f*8)+v] }} checked>
+                                            {{ valves[v] }}<br>
+                                        {% else %}
+                                            <input type="checkbox"
+                                                   name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }}
+                                                   id={{ valvenumbers[(f*8)+v] }}>
+                                            {{ valves[v] }}<br>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            {% for f in range(9,12) %}
+                                <a>{{ fatis[f] }}</a>
+                                <button id="cp" type="button" onclick='
+                                        var s = "";
+                                        {% for v in range(8) %}
+                                            if(document.getElementById({{ valvenumbers[(f*8)+v] }}).checked === true){
+                                            s += ({{ v }}+1).toString();
+                                            }
+                                        {% endfor %}
+                                        document.getElementById("values").innerHTML = s;
+                                        '>Copy
+                                </button>
+                                <button id="pst" type="button" onclick='
+                                    var s = document.getElementById("values");
+                                    var to_set = [];
+                                    for(var i = 0; i<s.innerHTML.length; i++){
+                                        var index = {{ f*8 }}+parseInt(s.innerHTML[i],10);
+                                        to_set.push(index);
+                                        document.getElementById(index).checked = true;
+                                    }
+                                    '>Mask
+                                </button>
+                                <button id="cp" type="button" onclick='
+                                    var s = "";
+                                    {% for v in range(8) %}
+                                        if(document.getElementById({{ valvenumbers[(f*8)+v] }}).checked === true){
+                                        document.getElementById({{ valvenumbers[(f*8)+v] }}).checked = false;
+                                        }
+                                    {% endfor %}
+                                    var s = document.getElementById("values");
+                                    var to_set = [];
+                                    for(var i = 0; i<s.innerHTML.length; i++){
+                                        var index = {{ f*8 }}+parseInt(s.innerHTML[i],10);
+                                        to_set.push(index);
+                                        document.getElementById(index).checked = true;
+                                    }
+                                    '>Paste
+                                </button>
+                                <button id="cp" type="button" onclick='
+                                        var s = "";
+                                        {% for v in range(8) %}
+                                            if(document.getElementById({{ valvenumbers[(f*8)+v] }}).checked === true){
+                                            document.getElementById({{ valvenumbers[(f*8)+v] }}).checked = false;
+                                            }
+                                        {% endfor %}
+                                        '>Clear
+                                </button><br>
+                                <div class="col-xl-3 col-md-6 mb-4">
+                                    {% for v in range(8) %}
+                                        {% if valvenumbers[(f*8)+v] in nrs %}
+                                            <input type="checkbox"
+                                                   name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }}
+                                                   id={{ valvenumbers[(f*8)+v] }} checked>
+                                            {{ valves[v] }}<br>
+                                        {% else %}
+                                            <input type="checkbox"
+                                                   name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }}
+                                                   id={{ valvenumbers[(f*8)+v] }}>
+                                            {{ valves[v] }}<br>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            {% for f in range(0,3) %}
+                                <a>{{ fatis[f] }}</a>
+                                <button id="cp" type="button" onclick='
+                                        var s = "";
+                                        {% for v in range(8) %}
+                                            if(document.getElementById({{ valvenumbers[(f*8)+v] }}).checked === true){
+                                            s += ({{ v }}+1).toString();
+                                            }
+                                        {% endfor %}
+                                        document.getElementById("values").innerHTML = s;
+                                        '>Copy
+                                </button>
+                                <button id="pst" type="button" onclick='
+                                    var s = document.getElementById("values");
+                                    var to_set = [];
+                                    for(var i = 0; i<s.innerHTML.length; i++){
+                                        var index = {{ f*8 }}+parseInt(s.innerHTML[i],10);
+                                        to_set.push(index);
+                                        document.getElementById(index).checked = true;
+                                    }
+                                    '>Mask
+                                </button>
+                                <button id="cp" type="button" onclick='
+                                    var s = "";
+                                    {% for v in range(8) %}
+                                        if(document.getElementById({{ valvenumbers[(f*8)+v] }}).checked === true){
+                                        document.getElementById({{ valvenumbers[(f*8)+v] }}).checked = false;
+                                        }
+                                    {% endfor %}
+                                    var s = document.getElementById("values");
+                                    var to_set = [];
+                                    for(var i = 0; i<s.innerHTML.length; i++){
+                                        var index = {{ f*8 }}+parseInt(s.innerHTML[i],10);
+                                        to_set.push(index);
+                                        document.getElementById(index).checked = true;
+                                    }
+                                    '>Paste
+                                </button>
+                                <button id="cp" type="button" onclick='
+                                        var s = "";
+                                        {% for v in range(8) %}
+                                            if(document.getElementById({{ valvenumbers[(f*8)+v] }}).checked === true){
+                                            document.getElementById({{ valvenumbers[(f*8)+v] }}).checked = false;
+                                            }
+                                        {% endfor %}
+                                        '>Clear
+                                </button><br>
+                                <div class="col-xl-3 col-md-6 mb-4">
+                                    {% for v in range(8) %}
+                                        <input type="checkbox" name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }}
+                                               id={{ valvenumbers[(f*8)+v] }}>
+                                        {{ valves[v] }}<br>
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            {% for f in range(3,6) %}
+                                <a>{{ fatis[f] }}</a>
+                                <button id="cp" type="button" onclick='
+                                        var s = "";
+                                        {% for v in range(8) %}
+                                            if(document.getElementById({{ valvenumbers[(f*8)+v] }}).checked === true){
+                                            s += ({{ v }}+1).toString();
+                                            }
+                                        {% endfor %}
+                                        document.getElementById("values").innerHTML = s;
+                                        '>Copy
+                                </button>
+                                <button id="pst" type="button" onclick='
+                                    var s = document.getElementById("values");
+                                    var to_set = [];
+                                    for(var i = 0; i<s.innerHTML.length; i++){
+                                        var index = {{ f*8 }}+parseInt(s.innerHTML[i],10);
+                                        to_set.push(index);
+                                        document.getElementById(index).checked = true;
+                                    }
+                                    '>Mask
+                                </button>
+                                <button id="cp" type="button" onclick='
+                                    var s = "";
+                                    {% for v in range(8) %}
+                                        if(document.getElementById({{ valvenumbers[(f*8)+v] }}).checked === true){
+                                        document.getElementById({{ valvenumbers[(f*8)+v] }}).checked = false;
+                                        }
+                                    {% endfor %}
+                                    var s = document.getElementById("values");
+                                    var to_set = [];
+                                    for(var i = 0; i<s.innerHTML.length; i++){
+                                        var index = {{ f*8 }}+parseInt(s.innerHTML[i],10);
+                                        to_set.push(index);
+                                        document.getElementById(index).checked = true;
+                                    }
+                                    '>Paste
+                                </button>
+                                <button id="cp" type="button" onclick='
+                                        var s = "";
+                                        {% for v in range(8) %}
+                                            if(document.getElementById({{ valvenumbers[(f*8)+v] }}).checked === true){
+                                            document.getElementById({{ valvenumbers[(f*8)+v] }}).checked = false;
+                                            }
+                                        {% endfor %}
+                                        '>Clear
+                                </button><br>
+                                <div class="col-xl-3 col-md-6 mb-4">
+                                    {% for v in range(8) %}
+                                        <input type="checkbox" name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }}
+                                               id={{ valvenumbers[(f*8)+v] }}>
+                                        {{ valves[v] }}<br>
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            {% for f in range(6,9) %}
+                                <a>{{ fatis[f] }}</a>
+                                <button id="cp" type="button" onclick='
+                                        var s = "";
+                                        {% for v in range(8) %}
+                                            if(document.getElementById({{ valvenumbers[(f*8)+v] }}).checked === true){
+                                            s += ({{ v }}+1).toString();
+                                            }
+                                        {% endfor %}
+                                        document.getElementById("values").innerHTML = s;
+                                        '>Copy
+                                </button>
+                                <button id="pst" type="button" onclick='
+                                    var s = document.getElementById("values");
+                                    var to_set = [];
+                                    for(var i = 0; i<s.innerHTML.length; i++){
+                                        var index = {{ f*8 }}+parseInt(s.innerHTML[i],10);
+                                        to_set.push(index);
+                                        document.getElementById(index).checked = true;
+                                    }
+                                    '>Mask
+                                </button>
+                                <button id="cp" type="button" onclick='
+                                    var s = "";
+                                    {% for v in range(8) %}
+                                        if(document.getElementById({{ valvenumbers[(f*8)+v] }}).checked === true){
+                                        document.getElementById({{ valvenumbers[(f*8)+v] }}).checked = false;
+                                        }
+                                    {% endfor %}
+                                    var s = document.getElementById("values");
+                                    var to_set = [];
+                                    for(var i = 0; i<s.innerHTML.length; i++){
+                                        var index = {{ f*8 }}+parseInt(s.innerHTML[i],10);
+                                        to_set.push(index);
+                                        document.getElementById(index).checked = true;
+                                    }
+                                    '>Paste
+                                </button>
+                                <button id="cp" type="button" onclick='
+                                        var s = "";
+                                        {% for v in range(8) %}
+                                            if(document.getElementById({{ valvenumbers[(f*8)+v] }}).checked === true){
+                                            document.getElementById({{ valvenumbers[(f*8)+v] }}).checked = false;
+                                            }
+                                        {% endfor %}
+                                        '>Clear
+                                </button><br>
+                                <div class="col-xl-3 col-md-6 mb-4">
+                                    {% for v in range(8) %}
+                                        <input type="checkbox" name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }}
+                                               id={{ valvenumbers[(f*8)+v] }}>
+                                        {{ valves[v] }}<br>
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            {% for f in range(9,12) %}
+                                <a>{{ fatis[f] }}</a>
+                                <button id="cp" type="button" onclick='
+                                        var s = "";
+                                        {% for v in range(8) %}
+                                            if(document.getElementById({{ valvenumbers[(f*8)+v] }}).checked === true){
+                                            s += ({{ v }}+1).toString();
+                                            }
+                                        {% endfor %}
+                                        document.getElementById("values").innerHTML = s;
+                                        '>Copy
+                                </button>
+                                <button id="pst" type="button" onclick='
+                                    var s = document.getElementById("values");
+                                    var to_set = [];
+                                    for(var i = 0; i<s.innerHTML.length; i++){
+                                        var index = {{ f*8 }}+parseInt(s.innerHTML[i],10);
+                                        to_set.push(index);
+                                        document.getElementById(index).checked = true;
+                                    }
+                                    '>Mask
+                                </button>
+                                <button id="cp" type="button" onclick='
+                                    var s = "";
+                                    {% for v in range(8) %}
+                                        if(document.getElementById({{ valvenumbers[(f*8)+v] }}).checked === true){
+                                        document.getElementById({{ valvenumbers[(f*8)+v] }}).checked = false;
+                                        }
+                                    {% endfor %}
+                                    var s = document.getElementById("values");
+                                    var to_set = [];
+                                    for(var i = 0; i<s.innerHTML.length; i++){
+                                        var index = {{ f*8 }}+parseInt(s.innerHTML[i],10);
+                                        to_set.push(index);
+                                        document.getElementById(index).checked = true;
+                                    }
+                                    '>Paste
+                                </button>
+                                <button id="cp" type="button" onclick='
+                                    var s = "";
+                                    {% for v in range(8) %}
+                                        if(document.getElementById({{ valvenumbers[(f*8)+v] }}).checked === true){
+                                        document.getElementById({{ valvenumbers[(f*8)+v] }}).checked = false;
+                                        }
+                                    {% endfor %}
+                                    '>Clear
+                                </button><br>
+                                <div class="col-xl-3 col-md-6 mb-4">
+                                    {% for v in range(8) %}
+                                        <input type="checkbox" name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }}
+                                               id={{ valvenumbers[(f*8)+v] }}>
+                                        {{ valves[v] }}<br>
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                <p id="values" hidden></p>
+                <input type="submit" value="Commit">
+            </form>
+        {% endif %}
+    </div>
+    <!-- End of Main Content -->
+{% endblock %}
