@@ -2,8 +2,6 @@ import binascii
 import datetime
 import csv
 
-from bitarray import bitarray
-
 from app.models import ValveConfiguration
 from app import app, db
 
@@ -12,6 +10,12 @@ def convert_to_emi(val):
     hex_val = '{0:04X}'.format(val)
     inv = hex_val[2:] + hex_val[:2]
     return inv
+
+
+def convert_to_dec(inv):
+    hex_val = inv[2:] + inv[:2]
+    dec_val = int(hex_val, 16)
+    return dec_val
 
 
 def convert_to_html_timestamp(timestamp):
@@ -60,10 +64,11 @@ def export_data_emi(filename):
             for i in range(6):
                 # Convert each 16 bits to int
                 byte = data[j - 16:j]
-                ba = bitarray('0' * 16, endian='little')
+                ba = []
                 for it in range(len(byte)):
-                    ba[it] = int(byte[it])
+                    ba.append(int(byte[it]))
                 value = 0
+                print(ba)
                 for bit in ba:
                     value = (value << 1) | bit
                 # Convert int to hex
@@ -147,9 +152,9 @@ def export_data(filename):
             j = 8
             for i in range(int(len(data) / 8)):
                 byte = data[j - 8:j]
-                ba = bitarray('0' * 8, endian='little')
+                ba = []
                 for it in range(len(byte)):
-                    ba[it] = int(byte[it])
+                    ba.append(int(byte[it]))
                 value = 0
                 for bit in ba:
                     value = (value << 1) | bit
@@ -229,6 +234,44 @@ def import_data_csv(filename):
                         db.session.add(vc)
                         db.session.commit()
                         line_count = 0
+
+
+def import_data_emi(filename):
+    if filename != '':
+        count = 0
+        with open(filename, mode='rb') as emi_file:
+            record = ["id", "year", "month", "day", "hour", "minute", "second", "f1-2", "f3-4", "f5-6", "f7-8", "f9-10",
+                      "f11-f12", "status"]
+            value = emi_file.read(2)
+            while value != '':
+                try:
+                    # Only the first 13 values have meaning
+                    if count <= 12:
+                        record[count] = convert_to_dec(binascii.hexlify(value))
+                        value = emi_file.read(2)
+                        count += 1
+                    elif 13 <= count < 19:
+                        # Contains only zero values
+                        value = emi_file.read(2)
+                        count += 1
+                    elif count == 19:
+                        # Read last zero
+                        value = emi_file.read(2)
+                        # Write record to db
+                        date = datetime.date(int(record[1]), int(record[2]), int(record[3]))
+                        time = datetime.time(int(record[4]), int(record[5]), int(record[6]))
+                        timestamp = datetime.datetime.combine(date, time)
+                        bs = ''
+                        for i in range(7, 13):
+                            bs += "{0:016b}".format(int(record[i]))
+                        bs += '0000000'
+                        vc = ValveConfiguration(timestamp=timestamp, status=bs)
+                        db.session.add(vc)
+                        db.session.commit()
+                        value = emi_file.read(2)
+                        count = 1
+                except ValueError as e:
+                    value = ''
 
 
 '''

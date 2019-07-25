@@ -19,7 +19,7 @@ for i in range(1, 97):
     vs.append(name)
     vn.append(i)
     bs2 += "0"
-    ##############################
+##############################
 
 
 @app.route('/')
@@ -112,6 +112,7 @@ def writetoemi():
     p = subprocess.Popen(['python', './app/fileSelect.py'], stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                          universal_newlines=True)
     out, err = p.communicate()
+    print(out.strip())
     export_data_emi(out.strip())
     return redirect("/")
 
@@ -127,6 +128,16 @@ def importcsv():
                          universal_newlines=True)
     out, err = p.communicate()
     import_data_csv(out.strip())
+    return redirect("/")\
+
+
+
+@app.route('/importemi', methods=['POST', 'GET'])
+def importemi():
+    p = subprocess.Popen(['python', './app/fileSelect.py'], stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                         universal_newlines=True)
+    out, err = p.communicate()
+    import_data_emi(out.strip())
     return redirect("/")
 
 
