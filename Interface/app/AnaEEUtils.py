@@ -202,13 +202,17 @@ def import_data_csv(filename):
                         date = datetime.date(int(record["year"]), int(record["month"]), int(record["day"]))
                         time = datetime.time(int(record["hour"]), int(record["minute"]), int(record["second"]))
                         timestamp = datetime.datetime.combine(date, time)
-                        bs = ''
-                        for i in range(11, 23):
-                            bs += "{0:08b}".format(int(record[keys[str(i)]]))
-                        bs += '0000000'
-                        vc = ValveConfiguration(timestamp=timestamp, status=bs)
-                        db.session.add(vc)
-                        db.session.commit()
+                        exists = db.session.query(ValveConfiguration.timestamp).filter_by(
+                            timestamp=timestamp).scalar() is not None
+                        # Skip existing entries
+                        if not exists:
+                            bs = ''
+                            for i in range(11, 23):
+                                bs += "{0:08b}".format(int(record[keys[str(i)]]))
+                            bs += '0000000'
+                            vc = ValveConfiguration(timestamp=timestamp, status=bs)
+                            db.session.add(vc)
+                            db.session.commit()
                         line_count = 0
                         first = False
                 else:
@@ -226,13 +230,17 @@ def import_data_csv(filename):
                         date = datetime.date(int(record["year"]), int(record["month"]), int(record["day"]))
                         time = datetime.time(int(record["hour"]), int(record["minute"]), int(record["second"]))
                         timestamp = datetime.datetime.combine(date, time)
-                        bs = ''
-                        for i in range(11, 23):
-                            bs += "{0:08b}".format(int(record[keys[str(i)]]))
-                        bs += '0000000'
-                        vc = ValveConfiguration(timestamp=timestamp, status=bs)
-                        db.session.add(vc)
-                        db.session.commit()
+                        exists = db.session.query(ValveConfiguration.timestamp).filter_by(
+                            timestamp=timestamp).scalar() is not None
+                        # Skip existing entries
+                        if not exists:
+                            bs = ''
+                            for i in range(11, 23):
+                                bs += "{0:08b}".format(int(record[keys[str(i)]]))
+                            bs += '0000000'
+                            vc = ValveConfiguration(timestamp=timestamp, status=bs)
+                            db.session.add(vc)
+                            db.session.commit()
                         line_count = 0
 
 
@@ -261,13 +269,17 @@ def import_data_emi(filename):
                         date = datetime.date(int(record[1]), int(record[2]), int(record[3]))
                         time = datetime.time(int(record[4]), int(record[5]), int(record[6]))
                         timestamp = datetime.datetime.combine(date, time)
-                        bs = ''
-                        for i in range(7, 13):
-                            bs += "{0:016b}".format(int(record[i]))
-                        bs += '0000000'
-                        vc = ValveConfiguration(timestamp=timestamp, status=bs)
-                        db.session.add(vc)
-                        db.session.commit()
+                        exists = db.session.query(ValveConfiguration.timestamp).filter_by(
+                            timestamp=timestamp).scalar() is not None
+                        # Skip existing entries
+                        if not exists:
+                            bs = ''
+                            for i in range(7, 13):
+                                bs += "{0:016b}".format(int(record[i]))
+                            bs += '0000000'
+                            vc = ValveConfiguration(timestamp=timestamp, status=bs)
+                            db.session.add(vc)
+                            db.session.commit()
                         value = emi_file.read(2)
                         count = 1
                 except ValueError as e:
