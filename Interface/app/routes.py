@@ -131,7 +131,6 @@ def importcsv():
     return redirect("/")\
 
 
-
 @app.route('/importemi', methods=['POST', 'GET'])
 def importemi():
     p = subprocess.Popen(['python', './app/fileSelect.py'], stdin=subprocess.PIPE, stdout=subprocess.PIPE,
