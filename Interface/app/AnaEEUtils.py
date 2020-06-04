@@ -240,7 +240,7 @@ def import_data_csv(filename):
                             bs += '0000000'
                             vc = ValveConfiguration(timestamp=timestamp, status=bs)
                             db.session.add(vc)
-                            db.session.commit()
+                        db.session.commit()
                         line_count = 0
 
 
@@ -279,7 +279,7 @@ def import_data_emi(filename):
                             bs += '0000000'
                             vc = ValveConfiguration(timestamp=timestamp, status=bs)
                             db.session.add(vc)
-                            db.session.commit()
+                        db.session.commit()
                         value = emi_file.read(2)
                         count = 1
                 except ValueError as e:

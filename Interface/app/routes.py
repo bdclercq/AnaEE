@@ -153,7 +153,7 @@ def clearall():
     vcs = ValveConfiguration.query.order_by(ValveConfiguration.timestamp).all()
     for vc in vcs:
         db.session.delete(vc)
-        db.session.commit()
+    db.session.commit()
     return redirect("/")
 
 
@@ -242,8 +242,11 @@ def change_misc():
         on_diff = int(on_time) - int(data["settings"]["on_time"])
         vcs = ValveConfiguration.query.order_by(ValveConfiguration.timestamp).all()
         for vc in vcs:
-            vc.timestamp = vc.timestamp + datetime.timedelta(seconds=int(on_diff))
-            db.session.commit()
+            if '1' in vc.status:
+                pass
+            else:
+                vc.timestamp = vc.timestamp + datetime.timedelta(seconds=int(on_diff))
+        db.session.commit()
         data["settings"]["on_time"] = on_time
         data["settings"]["shift_days"] = request.form['shift_days']
         data["settings"]["move_days"] = request.form['move_days']
@@ -278,7 +281,7 @@ def shift_entries():
                     days=int(json.load(open("app/misc.json", 'r'))["settings"]["move_days"]))
                 vc2 = ValveConfiguration(timestamp=timestamp, status=vc.status, configtype=vc.configtype)
                 db.session.add(vc2)
-                db.session.commit()
+            db.session.commit()
             return redirect('/')
         else:
             err = "Oops, something went wrong.\n"
