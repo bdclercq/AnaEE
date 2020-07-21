@@ -242,7 +242,8 @@ def change_misc():
         on_diff = int(on_time) - int(data["settings"]["on_time"])
         vcs = ValveConfiguration.query.order_by(ValveConfiguration.timestamp).all()
         for vc in vcs:
-            if '1' in vc.status:
+            if vc.configtype == 1:
+                print("Skipping start entry")
                 pass
             else:
                 vc.timestamp = vc.timestamp + datetime.timedelta(seconds=int(on_diff))

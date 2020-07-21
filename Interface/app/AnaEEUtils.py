@@ -74,8 +74,10 @@ def export_data_emi(filename):
                 # Convert int to hex
                 f.write(binascii.unhexlify(convert_to_emi(value)))
                 j = j + 16
+            ### Add marking for begin or end
+            f.write(binascii.unhexlify(convert_to_emi(conf.configtype)))
             ### Fill row
-            for i in range(6):
+            for i in range(5):
                 f.write(binascii.unhexlify(convert_to_emi(0)))
             ##
             f.write(binascii.unhexlify(convert_to_emi(0)))
@@ -254,11 +256,11 @@ def import_data_emi(filename):
             while value != '':
                 try:
                     # Only the first 13 values have meaning
-                    if count <= 12:
+                    if count <= 13:
                         record[count] = convert_to_dec(binascii.hexlify(value))
                         value = emi_file.read(2)
                         count += 1
-                    elif 13 <= count < 19:
+                    elif 14 <= count < 19:
                         # Contains only zero values
                         value = emi_file.read(2)
                         count += 1
@@ -277,7 +279,9 @@ def import_data_emi(filename):
                             for i in range(7, 13):
                                 bs += "{0:016b}".format(int(record[i]))
                             bs += '0000000'
-                            vc = ValveConfiguration(timestamp=timestamp, status=bs)
+                            conftype = int(record[13])
+                            print("Adding record with type {0}".format(conftype))
+                            vc = ValveConfiguration(timestamp=timestamp, status=bs, configtype=conftype)
                             db.session.add(vc)
                         db.session.commit()
                         value = emi_file.read(2)
