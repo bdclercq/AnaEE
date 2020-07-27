@@ -128,15 +128,26 @@ def importcsv():
                          universal_newlines=True)
     out, err = p.communicate()
     import_data_csv(out.strip())
-    return redirect("/")\
+    return redirect("/")
 
 
 @app.route('/importemi', methods=['POST', 'GET'])
 def importemi():
+    result = request.form.to_dict()
+    print(result)
+    ## overwrite == 0 -> don't overwrite
+    ## overwrite == 1 -> overwrite
+    overwrite = 0
+    try:
+        overwrite = result["overwrite"]
+    except KeyError as ke:
+        print("key not found")
+        pass
+    print(overwrite)
     p = subprocess.Popen(['python', './app/fileSelect.py'], stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                          universal_newlines=True)
     out, err = p.communicate()
-    import_data_emi(out.strip())
+    import_data_emi(out.strip(), overwrite)
     return redirect("/")
 
 

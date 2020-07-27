@@ -6,12 +6,14 @@
     <br>
     <div>
         <form action="/importcsv" method="post">
-            To import data from a CSV, click here.
-            <input type="submit" value="Import!">
+            To import data from a CSV file, click here.<br>
+            <input type="checkbox" name="overwrite" value="1">Overwrite existing values
+            <input type="submit" value="Import!"><br>
         </form>
         <form action="/importemi" method="post">
-            To import data from an emi, click here.
-            <input type="submit" value="Import!">
+            To import data from an emi file, click here.<br>
+            <input type="checkbox" name="overwrite" value="1">Overwrite existing values
+            <input type="submit" value="Import!"><br>
         </form>
     </div>
 {% endblock %}

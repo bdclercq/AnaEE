@@ -246,9 +246,10 @@ def import_data_csv(filename):
                         line_count = 0
 
 
-def import_data_emi(filename):
+def import_data_emi(filename, overwrite):
     if filename != '':
         count = 0
+        print(overwrite)
         with open(filename, mode='rb') as emi_file:
             record = ["id", "year", "month", "day", "hour", "minute", "second", "f1-2", "f3-4", "f5-6", "f7-8", "f9-10",
                       "f11-f12", "status"]
@@ -273,16 +274,21 @@ def import_data_emi(filename):
                         timestamp = datetime.datetime.combine(date, time)
                         exists = db.session.query(ValveConfiguration.timestamp).filter_by(
                             timestamp=timestamp).scalar() is not None
+                        bs = ''
+                        for i in range(7, 13):
+                            bs += "{0:016b}".format(int(record[i]))
+                        bs += '0000000'
+                        conftype = int(record[13])
                         # Skip existing entries
                         if not exists:
-                            bs = ''
-                            for i in range(7, 13):
-                                bs += "{0:016b}".format(int(record[i]))
-                            bs += '0000000'
-                            conftype = int(record[13])
                             print("Adding record with type {0}".format(conftype))
                             vc = ValveConfiguration(timestamp=timestamp, status=bs, configtype=conftype)
                             db.session.add(vc)
+                        if overwrite == "1":
+                            print("Overwrite record")
+                            print(bs)
+                            vc = ValveConfiguration.query.filter(ValveConfiguration.timestamp == timestamp).first()
+                            vc.status = bs
                         db.session.commit()
                         value = emi_file.read(2)
                         count = 1
