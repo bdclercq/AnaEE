@@ -4,11 +4,7 @@
         <!-- /.container-fluid -->
         {% if  timestamp %}
 {#            <input type="checkbox" name="generateEnd">Generate end stamp<br>#}
-            {% if data %}
-                Previous data found
-            {% else %}
-                Configuring for {{ timestamp }}
-            {% endif %}
+            Configuring for {{ timestamp }}
             <form action="/commit_config/{{ timestamp }}" method="post">
                 <input type="checkbox" name="generateEnd">Generate end stamp<br>
                 <div class="row">

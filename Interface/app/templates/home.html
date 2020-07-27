@@ -34,11 +34,14 @@
                 </div>
             <br>
             <input type="submit" name="action" value="Shift" data-toggle="tooltip" data-html="true"
-                            data-placement="top"
+                            data-placement="top" onclick="return confirm('Shift all entries after the selected record?')"
                             title="By clicking this button, all records following the selected record will be shifted." >
             <input type="submit" name="action" value="Move" data-toggle="tooltip" data-html="true"
-                            data-placement="top"
+                            data-placement="top" onclick="return confirm('Duplicate all records between the selected entries?')"
                             title="By clicking this button, all records between the selected records will be duplicated.">
+            <input type="submit" name="action" value="Delete selection" data-toggle="tooltip" data-html="true" data-placement="top"
+                   title="By clicking this button, all selected records will be removed." onclick="return confirm('Remove all selected entries?')">
+
             </form>
             <br>
             <button type="button" class="btn btn-secondary" onclick="window.location.href = '/clearall';">

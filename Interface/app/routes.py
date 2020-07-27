@@ -266,17 +266,15 @@ def change_misc():
 @app.route('/shift_entries', methods=["POST"])
 def shift_entries():
     result = request.form.to_dict()
-
-    # Move entries
-    if len(list(result.items())) == 3:
-        key, val = list(result.items())[0]
-        key2, val2 = list(result.items())[1]
-        action = list(result.items())[2]
-        vcs = ValveConfiguration.query \
-            .filter(ValveConfiguration.timestamp >= convert_timestamp(key)) \
-            .filter(ValveConfiguration.timestamp <= convert_timestamp(key2)) \
-            .order_by(desc(ValveConfiguration.timestamp)).all()
-        if action[1] == "Move":
+    action = list(result.items())[-1]
+    if action[1] == "Move":
+        if len(list(result.items())) == 3:
+            key, val = list(result.items())[0]
+            key2, val2 = list(result.items())[1]
+            vcs = ValveConfiguration.query \
+                .filter(ValveConfiguration.timestamp >= convert_timestamp(key)) \
+                .filter(ValveConfiguration.timestamp <= convert_timestamp(key2)) \
+                .order_by(desc(ValveConfiguration.timestamp)).all()
             for vc in vcs:
                 timestamp = vc.timestamp + datetime.timedelta(
                     days=int(json.load(open("app/misc.json", 'r'))["settings"]["move_days"]))
@@ -293,29 +291,26 @@ def shift_entries():
                 err += "Something went wrong (@app.route('shift_entries'), Move entries part). \n" \
                        "Are you sure you selected 2 items and clicked 'Move'?"
             return render_template('400.html', err=err)
-    # Shit entries
-    elif len(list(result.items())) == 2:
-        key, val = list(result.items())[0]
-        action = list(result.items())[1]
-        vcs = ValveConfiguration.query \
-            .filter(ValveConfiguration.timestamp >= convert_timestamp(key)) \
-            .order_by(desc(ValveConfiguration.timestamp)).all()
-        if action[1] == "Shift":
+    elif action[1] == "Shift":
+        if len(list(result.items())) == 2:
+            key, val = list(result.items())[0]
+            vcs = ValveConfiguration.query \
+                .filter(ValveConfiguration.timestamp >= convert_timestamp(key)) \
+                .order_by(desc(ValveConfiguration.timestamp)).all()
             for vc in vcs:
                 vc.timestamp += datetime.timedelta(
                     days=int(json.load(open("app/misc.json", 'r'))["settings"]["shift_days"]))
                 db.session.commit()
             return redirect('/')
+            # Return error
         else:
-            err = "Oops, something went wrong.\n"
-            if action[1] == "Move":
-                err += "You selected 1 item and clicked on 'Move'. \n" \
-                       "Please select one item more or click 'Shift' next time."
-            else:
-                err += "Something went wrong (@app.route('shift_entries'), Shift entries part). \n" \
-                       "Are you sure you selected 1 item and clicked 'Shift'?"
+            err = "Too many items checked at once, please try again by checking less items"
             return render_template('400.html', err=err)
-    # Return error
-    else:
-        err = "Too many items checked at once, please try again by checking less items"
-        return render_template('400.html', err=err)
+    elif action[1] == "Delete selection":
+        for i in range(0, len(list(result.items()))-1):
+            key, val = list(result.items())[i]
+            print(key)
+            vc = ValveConfiguration.query.filter(ValveConfiguration.timestamp == convert_timestamp(key)).first()
+            db.session.delete(vc)
+        db.session.commit()
+        return redirect('/')

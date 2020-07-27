@@ -6,7 +6,7 @@ except ImportError:
         import tkFileDialog as filedialog
         from Tkinter import *
     except ImportError:
-        print("Fuck this, no exporting for you apparently.")
+        print("Problem with TKinter, try Google for solutions.")
 import sys
 
 
