@@ -6,6 +6,43 @@ from app.models import ValveConfiguration
 from app import app, db
 
 
+def check_stamp_lower(stamp, f, v):
+    vcs = ValveConfiguration.query.filter_by(timestamp=stamp).all()
+    for vc in vcs:
+        if vc.status[(f*8)+v] == '0':
+            return True
+    return False
+
+
+def check_stamp_higher(stamp, f, v):
+    vcs = ValveConfiguration.query.filter_by(timestamp=stamp).all()
+    for vc in vcs:
+        if vc.status[(f*8)+v] == '1':
+            return True
+    return False
+
+
+def check_overview(data, limits):
+    problems = {'lower': [], 'higher': [], 'lower_valves': [], 'higher_valves': []}
+    for k in data.keys(): # Date
+        for f in data[k].keys(): # Fati
+            for v in data[k][f].keys(): # Valve
+                if data[k][f][v]['run_time'] < limits['min_target']:
+                    # get entries for this day
+                    for stamp in data[k][f][v]['stamps']:
+                        if check_stamp_lower(stamp, f, v):# and stamp not in problems['lower']:
+                            problems['lower'].append(stamp)
+                            problems['lower_valves'].append((f*8)+v)
+                elif data[k][f][v]['run_time'] > limits['max_target']:
+                    # get entries for this day
+                    for stamp in data[k][f][v]['stamps']:
+                        if check_stamp_higher(stamp, f, v):# and stamp not in problems['higher']:
+                            problems['higher'].append(stamp)
+                            problems['higher_valves'].append((f * 8) + v)
+    print(problems)
+    return problems
+
+
 def convert_to_emi(val):
     hex_val = '{0:04X}'.format(val)
     inv = hex_val[2:] + hex_val[:2]

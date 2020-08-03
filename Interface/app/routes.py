@@ -200,6 +200,7 @@ def overview():
     confs = ValveConfiguration.query.order_by(ValveConfiguration.timestamp).all()
     for conf in confs:
         stamp = conf.timestamp
+        init_stamp = conf.timestamp
         date = getDate(stamp)
         if date not in data.keys():
             data[date] = {}
@@ -215,6 +216,7 @@ def overview():
                     data[date][f][v]['run_time'] = 0
                     data[date][f][v]['started_on'] = 0
                     data[date][f][v]['running'] = False
+                    data[date][f][v]['stamps'] = []
                 if status[(f * 8) + v] == '0':
                     if not data[date][f][v]['running']:
                         # Status of valve is 0, valve wasn't running: we don't have to record anything
@@ -224,19 +226,22 @@ def overview():
                         data[date][f][v]['running'] = False
                         data[date][f][v]['run_time'] += (stamp - data[date][f][v]['started_on']).seconds
                         data[date][f][v]['started_on'] = 0
+                        data[date][f][v]['stamps'].append(init_stamp)
                 elif status[(f * 8) + v] == '1':
                     if not data[date][f][v]['running']:
                         # Valve was not running, status changed to 'on': turn on valve and update records
                         data[date][f][v]['running'] = True
                         if data[date][f][v]['started_on'] == 0:
                             data[date][f][v]['started_on'] = stamp
+                            data[date][f][v]['stamps'].append(init_stamp)
                     else:
                         # Valve is running, status is 'on': we don't have to do anythin
                         pass
                 else:
                     err = "Oops, something went wrong.\n Encountered a status that is neither 1 or 0."
                     return render_template('400.html', err=err)
-    return render_template('overview.html', data=data, limits=bounds, colors=colors)
+    problems = check_overview(data, bounds)
+    return render_template('overview.html', data=data, limits=bounds, colors=colors, problems=problems)
 
 
 @app.route('/misc', methods=['POST', 'GET'])

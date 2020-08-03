@@ -17,7 +17,9 @@
         <h1>Overview</h1>
         <a>Below is a day-by-day visual representation of the recorded configurations, color-coded according to the legend.</a><br>
         <br>
-        <div style="overflow-y: scroll; height:500px; width:500px;">
+        <div class="row">
+
+        <div class="col-xl-3 col-md-6 mb-4" style="overflow-y: scroll; height:500px; width:500px;">
 
             <table border="1">
                 {% for k in data.keys() %}
@@ -44,6 +46,36 @@
             </table>
 
         </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            Problems found, try checking following entries:<br>
+            Days where the value is under the minimum threshold
+            <table border="1" title="Days where the value is lower">
+                {% for i in range(problems['lower']|length) %}
+                    <tr>
+                        <button type="button" class="btn btn-secondary" onclick="window.location.href = '/configure/{{ problems['lower'][i] }}';"
+                        data-toggle="tooltip" data-html="true" data-placement="top" title='Problem with valve {{ problems['lower_valves'][i] }}'>
+                            {{ problems['lower'][i] }}
+                        </button>
+                    </tr>
+                {% endfor %}
+            </table>
+            <br>
+            Days where the value is above the maximum threshold
+            <table border="1" title="Days where the value is higher">
+                {% for i in range(problems['higher']|length)  %}
+                    <tr>
+                        <button type="button" class="btn btn-secondary" onclick="window.location.href = '/configure/{{ problems['higher'][i] }}';"
+                        data-toggle="tooltip" data-html="true" data-placement="top" title='Problem with valve {{ problems['higher_valves'][i] }}'>
+                            {{ problems['higher'][i] }}
+                        </button>
+                    </tr>
+                {% endfor %}
+            </table>
+
+        </div>
+
+        </div>
+
         <div>
             <ul class="legend">
                 <li><span class="smaller"></span> Smaller than the minimum limit</li>
