@@ -18,6 +18,7 @@
 
     <div class="col-xl-3 col-md-6 mb-4">
         <a>Data stored in the database</a><br>
+        {{ starts }} entries found with a start tag, {{ ends }} entries found with an end tag, {{ size }} entries in total.
         {% if size > 0 %}
             <form action="/shift_entries" method="post">
                 <div style="overflow-y: scroll; height:500px;">

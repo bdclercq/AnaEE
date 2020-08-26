@@ -22,19 +22,28 @@ for i in range(1, 97):
 ##############################
 
 
+##############################
+### HOME PAGE
+##############################
 @app.route('/')
 @app.route('/home')
 def home():
     vcs = ValveConfiguration.query.order_by(ValveConfiguration.timestamp).all()
     times = []
     statuses = []
+    starts = len(ValveConfiguration.query.filter(ValveConfiguration.configtype==1).all())
+    ends = len(ValveConfiguration.query.filter(ValveConfiguration.configtype==0).all())
     for vc in vcs:
         s = convert_to_html_timestamp(vc.timestamp)
         times.append(s)
         statuses.append(vc.status)
     return render_template('home.html', size=len(times), times=times, stats=statuses, fatis=fs, valves=vs,
-                           valvenumbers=vn)
+                           valvenumbers=vn, starts=starts, ends=ends)
 
+
+##############################
+### COMMITTING CONFIGURATIONS
+##############################
 
 @app.route('/configure/<timestmp>', methods=['POST', 'GET'])
 @app.route('/configure/', methods=['POST', 'GET'])
@@ -93,6 +102,10 @@ def commit_config(timestamp):
     return redirect("/")
 
 
+##############################
+### EXPORT DATABASE
+##############################
+
 @app.route('/export')
 def export():
     return render_template('export.html')
@@ -112,10 +125,13 @@ def writetoemi():
     p = subprocess.Popen(['python', './app/fileSelect.py'], stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                          universal_newlines=True)
     out, err = p.communicate()
-    print(out.strip())
     export_data_emi(out.strip())
     return redirect("/")
 
+
+##############################
+### IMPORT DATA
+##############################
 
 @app.route('/importdata')
 def importdata():
@@ -124,6 +140,15 @@ def importdata():
 
 @app.route('/importcsv', methods=['POST', 'GET'])
 def importcsv():
+    result = request.form.to_dict()
+    ## overwrite == 0 -> don't overwrite
+    ## overwrite == 1 -> overwrite
+    overwrite = 0
+    try:
+        overwrite = result["overwrite"]
+    except KeyError as ke:
+        print("key not found")
+        pass
     p = subprocess.Popen(['python', './app/fileSelect.py'], stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                          universal_newlines=True)
     out, err = p.communicate()
@@ -134,7 +159,6 @@ def importcsv():
 @app.route('/importemi', methods=['POST', 'GET'])
 def importemi():
     result = request.form.to_dict()
-    print(result)
     ## overwrite == 0 -> don't overwrite
     ## overwrite == 1 -> overwrite
     overwrite = 0
@@ -143,13 +167,16 @@ def importemi():
     except KeyError as ke:
         print("key not found")
         pass
-    print(overwrite)
     p = subprocess.Popen(['python', './app/fileSelect.py'], stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                          universal_newlines=True)
     out, err = p.communicate()
     import_data_emi(out.strip(), overwrite)
     return redirect("/")
 
+
+##############################
+### REMOVE DATA
+##############################
 
 @app.route('/remove/<timestamp>', methods=['POST', 'GET'])
 def remove(timestamp):
@@ -167,6 +194,10 @@ def clearall():
     db.session.commit()
     return redirect("/")
 
+
+##############################
+### DUPLICATE RECORDS
+##############################
 
 @app.route('/duplication/<timestamp>', methods=['POST', 'GET'])
 def duplication(timestamp):
@@ -189,6 +220,66 @@ def duplicate(old):
     db.session.commit()
     return redirect("/")
 
+##############################
+### SHIFT ENTRIES
+##############################
+
+@app.route('/shift_entries', methods=["POST"])
+def shift_entries():
+    result = request.form.to_dict()
+    action = list(result.items())[-1]
+    if action[1] == "Move":
+        if len(list(result.items())) == 3:
+            key, val = list(result.items())[0]
+            key2, val2 = list(result.items())[1]
+            vcs = ValveConfiguration.query \
+                .filter(ValveConfiguration.timestamp >= convert_timestamp(key)) \
+                .filter(ValveConfiguration.timestamp <= convert_timestamp(key2)) \
+                .order_by(desc(ValveConfiguration.timestamp)).all()
+            for vc in vcs:
+                timestamp = vc.timestamp + datetime.timedelta(
+                    days=int(json.load(open("app/misc.json", 'r'))["settings"]["move_days"]))
+                vc2 = ValveConfiguration(timestamp=timestamp, status=vc.status, configtype=vc.configtype)
+                db.session.add(vc2)
+            db.session.commit()
+            return redirect('/')
+        else:
+            err = "Oops, something went wrong.\n"
+            if action[1] == "Shift":
+                err += "You selected 2 items and clicked on 'Shift'. \n" \
+                       "Please select one item less or click 'Move' next time."
+            else:
+                err += "Something went wrong (@app.route('shift_entries'), Move entries part). \n" \
+                       "Are you sure you selected 2 items and clicked 'Move'?"
+            return render_template('400.html', err=err)
+    elif action[1] == "Shift":
+        if len(list(result.items())) == 2:
+            key, val = list(result.items())[0]
+            vcs = ValveConfiguration.query \
+                .filter(ValveConfiguration.timestamp >= convert_timestamp(key)) \
+                .order_by(desc(ValveConfiguration.timestamp)).all()
+            for vc in vcs:
+                vc.timestamp += datetime.timedelta(
+                    days=int(json.load(open("app/misc.json", 'r'))["settings"]["shift_days"]))
+                db.session.commit()
+            return redirect('/')
+            # Return error
+        else:
+            err = "Too many items checked at once, please try again by checking less items"
+            return render_template('400.html', err=err)
+    elif action[1] == "Delete selection":
+        for i in range(0, len(list(result.items()))-1):
+            key, val = list(result.items())[i]
+            print(key)
+            vc = ValveConfiguration.query.filter(ValveConfiguration.timestamp == convert_timestamp(key)).first()
+            db.session.delete(vc)
+        db.session.commit()
+        return redirect('/')
+
+
+##############################
+### OVERVIEW MATRIX
+##############################
 
 @app.route('/overview')
 def overview():
@@ -244,6 +335,10 @@ def overview():
     return render_template('overview.html', data=data, limits=bounds, colors=colors, problems=problems)
 
 
+##############################
+### MISC SETTINGS
+##############################
+
 @app.route('/misc', methods=['POST', 'GET'])
 def misc():
     data = json.load(open("app/misc.json", 'r'))
@@ -279,54 +374,22 @@ def change_misc():
         return redirect("/misc")
 
 
-@app.route('/shift_entries', methods=["POST"])
-def shift_entries():
-    result = request.form.to_dict()
-    action = list(result.items())[-1]
-    if action[1] == "Move":
-        if len(list(result.items())) == 3:
-            key, val = list(result.items())[0]
-            key2, val2 = list(result.items())[1]
-            vcs = ValveConfiguration.query \
-                .filter(ValveConfiguration.timestamp >= convert_timestamp(key)) \
-                .filter(ValveConfiguration.timestamp <= convert_timestamp(key2)) \
-                .order_by(desc(ValveConfiguration.timestamp)).all()
-            for vc in vcs:
-                timestamp = vc.timestamp + datetime.timedelta(
-                    days=int(json.load(open("app/misc.json", 'r'))["settings"]["move_days"]))
-                vc2 = ValveConfiguration(timestamp=timestamp, status=vc.status, configtype=vc.configtype)
-                db.session.add(vc2)
-            db.session.commit()
-            return redirect('/')
+##############################
+### CHECK TAGS
+##############################
+
+@app.route('/check_tags', methods=["GET"])
+def check_tags():
+    return render_template("checktags.html")
+
+
+@app.route('/performcheck', methods=["POST"])
+def performcheck():
+    vcs = ValveConfiguration.query.order_by(ValveConfiguration.timestamp).all()
+    for vc in vcs:
+        if '1' in vc.status:
+            vc.configtype = 1
         else:
-            err = "Oops, something went wrong.\n"
-            if action[1] == "Shift":
-                err += "You selected 2 items and clicked on 'Shift'. \n" \
-                       "Please select one item less or click 'Move' next time."
-            else:
-                err += "Something went wrong (@app.route('shift_entries'), Move entries part). \n" \
-                       "Are you sure you selected 2 items and clicked 'Move'?"
-            return render_template('400.html', err=err)
-    elif action[1] == "Shift":
-        if len(list(result.items())) == 2:
-            key, val = list(result.items())[0]
-            vcs = ValveConfiguration.query \
-                .filter(ValveConfiguration.timestamp >= convert_timestamp(key)) \
-                .order_by(desc(ValveConfiguration.timestamp)).all()
-            for vc in vcs:
-                vc.timestamp += datetime.timedelta(
-                    days=int(json.load(open("app/misc.json", 'r'))["settings"]["shift_days"]))
-                db.session.commit()
-            return redirect('/')
-            # Return error
-        else:
-            err = "Too many items checked at once, please try again by checking less items"
-            return render_template('400.html', err=err)
-    elif action[1] == "Delete selection":
-        for i in range(0, len(list(result.items()))-1):
-            key, val = list(result.items())[i]
-            print(key)
-            vc = ValveConfiguration.query.filter(ValveConfiguration.timestamp == convert_timestamp(key)).first()
-            db.session.delete(vc)
-        db.session.commit()
-        return redirect('/')
+            vc.configtype = 0
+    db.session.commit()
+    return redirect('/')

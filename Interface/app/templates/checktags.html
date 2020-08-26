@@ -1,0 +1,12 @@
+{% extends "template.html" %}
+{% block content %}
+
+    <h1>Check tags</h1>
+    <br>
+    <div>
+        <form action="/performcheck" method="post">
+            Not sure if the start and/or end tags are correct? Click "Check now" to give all-zero entries an end-tag and all other entries a start-tag.<br>
+            <input type="submit" value="Check now"><br>
+        </form>
+    </div>
+{% endblock %}

@@ -6,6 +6,10 @@ from app.models import ValveConfiguration
 from app import app, db
 
 
+##############################
+### CHECK TIMESTAMPS
+##############################
+
 def check_stamp_lower(stamp, f, v):
     vcs = ValveConfiguration.query.filter_by(timestamp=stamp).all()
     for vc in vcs:
@@ -21,6 +25,23 @@ def check_stamp_higher(stamp, f, v):
             return True
     return False
 
+
+##############################
+### CONVERT TIMESTAMP
+##############################
+
+def convert_to_html_timestamp(timestamp):
+    date = datetime.date(timestamp.year, timestamp.month, timestamp.day)
+    time = datetime.time(timestamp.hour, timestamp.minute, timestamp.second)
+    s = date.isoformat()
+    s += "T"
+    s += time.isoformat()
+    return s
+
+
+##############################
+### CHECK OVERVIEW FOR ERRORS
+##############################
 
 def check_overview(data, limits):
     problems = {'lower': [], 'higher': [], 'lower_valves': [], 'higher_valves': []}
@@ -39,9 +60,12 @@ def check_overview(data, limits):
                         if check_stamp_higher(stamp, f, v):# and stamp not in problems['higher']:
                             problems['higher'].append(stamp)
                             problems['higher_valves'].append((f * 8) + v)
-    print(problems)
     return problems
 
+
+##############################
+### CONVERT VALUES
+##############################
 
 def convert_to_emi(val):
     hex_val = '{0:04X}'.format(val)
@@ -55,15 +79,9 @@ def convert_to_dec(inv):
     return dec_val
 
 
-def convert_to_html_timestamp(timestamp):
-    date = datetime.date(timestamp.year, timestamp.month, timestamp.day)
-    time = datetime.time(timestamp.hour, timestamp.minute, timestamp.second)
-    s = date.isoformat()
-    s += "T"
-    s += time.isoformat()
-    return s
-
-
+##############################
+### EXPORT DATABASE
+##############################
 '''
 Export data to emi format
 '''
@@ -141,7 +159,7 @@ The output file will be a CSV file with following format:
 <decimal value of byte 3>
 ...
 <decimal value of byte 12>
-0
+<configtype>
 0
 0
 0
@@ -199,14 +217,20 @@ def export_data(filename):
                     value = (value << 1) | bit
                 f.write(str(value))
                 f.write('\n')
+                f.write(str(conf.configtype))
+                f.write('\n')
                 j = j + 8
             ### Fill row
-            for i in range(4):
+            for i in range(3):
                 f.write(str(0))
                 f.write('\n')
         ##############################
         f.close()
 
+
+##############################
+### IMPORT DATABASE
+##############################
 
 '''
 Imports data from a CSV file
@@ -219,6 +243,7 @@ def import_data_csv(filename):
         with open(filename, mode='r') as csv_file:
             csv_reader = csv.DictReader(csv_file)
             line_count = 0
+            skip = 1
             record = {"id": 0, "year": 0, "month": 0, "day": 0, "hour": 0, "minute": 0, "second": 0, "f1": 0,
                       "f2": 0, "f3": 0, "f4": 0, "f5": 0, "f6": 0, "f7": 0, "f8": 0, "f9": 0, "f10": 0,
                       "f11": 0, "f12": 0, "status": 0}
@@ -233,11 +258,16 @@ def import_data_csv(filename):
                     elif 5 < line_count < 10:
                         line_count += 1
                     elif 10 <= line_count <= 22:
-                        record[keys[str(line_count+1)]] = row['1']
+                        if skip:
+                            record[keys[str(line_count+1)]] = row['1']
+                            skip = 0
+                            line_count += 1
+                        else:
+                            skip = 1
+                    elif 22 < line_count < 24:
                         line_count += 1
-                    elif 22 < line_count < 25:
-                        line_count += 1
-                    elif line_count == 25:
+                    elif line_count == 24:
+                        print(record)
                         date = datetime.date(int(record["year"]), int(record["month"]), int(record["day"]))
                         time = datetime.time(int(record["hour"]), int(record["minute"]), int(record["second"]))
                         timestamp = datetime.datetime.combine(date, time)
@@ -249,10 +279,11 @@ def import_data_csv(filename):
                             for i in range(11, 23):
                                 bs += "{0:08b}".format(int(record[keys[str(i)]]))
                             bs += '0000000'
-                            vc = ValveConfiguration(timestamp=timestamp, status=bs)
+                            vc = ValveConfiguration(timestamp=timestamp, status=bs, configtype=int(record[keys[str(23)]]))
                             db.session.add(vc)
                             db.session.commit()
                         line_count = 0
+                        skip = 1
                         first = False
                 else:
                     if 0 <= line_count <= 6:
@@ -261,11 +292,16 @@ def import_data_csv(filename):
                     elif 6 < line_count < 11:
                         line_count += 1
                     elif 11 <= line_count <= 23:
-                        record[keys[str(line_count)]] = row['1']
+                        if skip:
+                            record[keys[str(line_count)]] = row['1']
+                            line_count += 1
+                            skip = 0
+                        else:
+                            skip = 1
+                    elif 23 < line_count < 25:
                         line_count += 1
-                    elif 23 < line_count < 26:
-                        line_count += 1
-                    elif line_count == 26:
+                    elif line_count == 25:
+                        print(record)
                         date = datetime.date(int(record["year"]), int(record["month"]), int(record["day"]))
                         time = datetime.time(int(record["hour"]), int(record["minute"]), int(record["second"]))
                         timestamp = datetime.datetime.combine(date, time)
@@ -281,12 +317,13 @@ def import_data_csv(filename):
                             db.session.add(vc)
                         db.session.commit()
                         line_count = 0
+                        skip = 1
 
 
 def import_data_emi(filename, overwrite):
     if filename != '':
         count = 0
-        print(overwrite)
+        #print(overwrite)
         with open(filename, mode='rb') as emi_file:
             record = ["id", "year", "month", "day", "hour", "minute", "second", "f1-2", "f3-4", "f5-6", "f7-8", "f9-10",
                       "f11-f12", "status"]
@@ -318,14 +355,15 @@ def import_data_emi(filename, overwrite):
                         conftype = int(record[13])
                         # Skip existing entries
                         if not exists:
-                            print("Adding record with type {0}".format(conftype))
+                            #print("Adding record with type {0}".format(conftype))
                             vc = ValveConfiguration(timestamp=timestamp, status=bs, configtype=conftype)
                             db.session.add(vc)
                         if overwrite == "1":
-                            print("Overwrite record")
+                            #print("Overwrite record")
                             print(bs)
                             vc = ValveConfiguration.query.filter(ValveConfiguration.timestamp == timestamp).first()
                             vc.status = bs
+                            vc.configtype = conftype
                         db.session.commit()
                         value = emi_file.read(2)
                         count = 1
