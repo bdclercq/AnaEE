@@ -63,7 +63,7 @@ def configure(timestmp=None):
         return render_template('configure.html', timestamp=tmstmp, fatis=fs, valves=vs, valvenumbers=vn)
 
 
-@app.route('/commit_config/<timestamp>', methods=['POST', 'GET'])
+@app.route('/commit_config/<timestamp>', methods=['POST'])
 def commit_config(timestamp):
     if request.method == 'POST':
         result = request.form
@@ -99,6 +99,8 @@ def commit_config(timestamp):
             config = ValveConfiguration.query.filter_by(timestamp=timestamp).first()
             config.status = bs
             db.session.commit()
+    else:
+        return render_template('400.html', err="Operation not permitted.")
     return redirect("/")
 
 
@@ -131,6 +133,8 @@ def writetoemi():
 
 ##############################
 ### IMPORT DATA
+### overwrite == 0 -> don't overwrite
+### overwrite == 1 -> overwrite
 ##############################
 
 @app.route('/importdata')
@@ -141,8 +145,6 @@ def importdata():
 @app.route('/importcsv', methods=['POST', 'GET'])
 def importcsv():
     result = request.form.to_dict()
-    ## overwrite == 0 -> don't overwrite
-    ## overwrite == 1 -> overwrite
     overwrite = 0
     try:
         overwrite = result["overwrite"]
@@ -152,15 +154,13 @@ def importcsv():
     p = subprocess.Popen(['python', './app/fileSelect.py'], stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                          universal_newlines=True)
     out, err = p.communicate()
-    import_data_csv(out.strip())
+    import_data_csv(out.strip(), overwrite)
     return redirect("/")
 
 
 @app.route('/importemi', methods=['POST', 'GET'])
 def importemi():
     result = request.form.to_dict()
-    ## overwrite == 0 -> don't overwrite
-    ## overwrite == 1 -> overwrite
     overwrite = 0
     try:
         overwrite = result["overwrite"]
@@ -219,6 +219,7 @@ def duplicate(old):
     db.session.add(vc)
     db.session.commit()
     return redirect("/")
+
 
 ##############################
 ### SHIFT ENTRIES
@@ -353,10 +354,7 @@ def change_misc():
         on_diff = int(on_time) - int(data["settings"]["on_time"])
         vcs = ValveConfiguration.query.order_by(ValveConfiguration.timestamp).all()
         for vc in vcs:
-            if vc.configtype == 1:
-                print("Skipping start entry")
-                pass
-            else:
+            if vc.configtype == 0:
                 vc.timestamp = vc.timestamp + datetime.timedelta(seconds=int(on_diff))
         db.session.commit()
         data["settings"]["on_time"] = on_time

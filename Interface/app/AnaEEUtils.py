@@ -237,7 +237,7 @@ Imports data from a CSV file
 '''
 
 
-def import_data_csv(filename):
+def import_data_csv(filename, overwrite):
     if filename != '':
         first = True
         with open(filename, mode='r') as csv_file:
@@ -267,7 +267,6 @@ def import_data_csv(filename):
                     elif 22 < line_count < 24:
                         line_count += 1
                     elif line_count == 24:
-                        print(record)
                         date = datetime.date(int(record["year"]), int(record["month"]), int(record["day"]))
                         time = datetime.time(int(record["hour"]), int(record["minute"]), int(record["second"]))
                         timestamp = datetime.datetime.combine(date, time)
@@ -301,10 +300,10 @@ def import_data_csv(filename):
                     elif 23 < line_count < 25:
                         line_count += 1
                     elif line_count == 25:
-                        print(record)
                         date = datetime.date(int(record["year"]), int(record["month"]), int(record["day"]))
                         time = datetime.time(int(record["hour"]), int(record["minute"]), int(record["second"]))
                         timestamp = datetime.datetime.combine(date, time)
+                        conftype = record["status"]
                         exists = db.session.query(ValveConfiguration.timestamp).filter_by(
                             timestamp=timestamp).scalar() is not None
                         # Skip existing entries
@@ -313,8 +312,12 @@ def import_data_csv(filename):
                             for i in range(11, 23):
                                 bs += "{0:08b}".format(int(record[keys[str(i)]]))
                             bs += '0000000'
-                            vc = ValveConfiguration(timestamp=timestamp, status=bs)
+                            vc = ValveConfiguration(timestamp=timestamp, status=bs, configtype=conftype)
                             db.session.add(vc)
+                        if overwrite == "1":
+                            vc = ValveConfiguration.query.filter(ValveConfiguration.timestamp == timestamp).first()
+                            vc.status = bs
+                            vc.configtype = conftype
                         db.session.commit()
                         line_count = 0
                         skip = 1
@@ -359,8 +362,6 @@ def import_data_emi(filename, overwrite):
                             vc = ValveConfiguration(timestamp=timestamp, status=bs, configtype=conftype)
                             db.session.add(vc)
                         if overwrite == "1":
-                            #print("Overwrite record")
-                            print(bs)
                             vc = ValveConfiguration.query.filter(ValveConfiguration.timestamp == timestamp).first()
                             vc.status = bs
                             vc.configtype = conftype
