@@ -14,3 +14,4 @@
 \contentsline {subsection}{\numberline {3.8}Export the data}{11}{subsection.3.8}% 
 \contentsline {subsection}{\numberline {3.9}Import the data}{12}{subsection.3.9}% 
 \contentsline {subsection}{\numberline {3.10}Miscellaneous settings}{13}{subsection.3.10}% 
+\contentsline {subsection}{\numberline {3.11}Check tags}{14}{subsection.3.11}% 

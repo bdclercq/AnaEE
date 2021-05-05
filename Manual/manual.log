@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex 2019.7.18)  25 JUL 2019 10:59
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex 2019.7.18)  5 MAY 2021 19:21
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -386,12 +386,12 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 {/usr/local/texlive/2019/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] [2
 
 ]
-<images/Home_screen_no_data.png, id=99, 2055.68pt x 1156.32pt>
+<images/Home_screen_no_data.png, id=99, 4111.36pt x 2312.64pt>
 File: images/Home_screen_no_data.png Graphic file (type png)
 <use images/Home_screen_no_data.png>
 Package pdftex.def Info: images/Home_screen_no_data.png  used on input line 48.
 
-(pdftex.def)             Requested size: 390.0pt x 219.36784pt.
+(pdftex.def)             Requested size: 390.0pt x 219.3502pt.
 
 
 Package caption Warning: The option `hypcap=true' will be ignored for this
@@ -403,12 +403,12 @@ Underfull \hbox (badness 10000) in paragraph at lines 51--52
 
  []
 
-<images/Empty_config_screen.png, id=101, 2079.77pt x 1184.425pt>
+<images/Empty_config_screen.png, id=101, 4111.36pt x 2312.64pt>
 File: images/Empty_config_screen.png Graphic file (type png)
 <use images/Empty_config_screen.png>
 Package pdftex.def Info: images/Empty_config_screen.png  used on input line 53.
 
-(pdftex.def)             Requested size: 390.0pt x 222.09721pt.
+(pdftex.def)             Requested size: 390.0pt x 219.3502pt.
 
 Package caption Warning: The option `hypcap=true' will be ignored for this
 (caption)                particular \caption on input line 54.
@@ -422,11 +422,11 @@ File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <12> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 59.
-<images/Edit_options.png, id=108, 2079.77pt x 1184.425pt>
+<images/Edit_options.png, id=108, 4111.36pt x 2312.64pt>
 File: images/Edit_options.png Graphic file (type png)
 <use images/Edit_options.png>
 Package pdftex.def Info: images/Edit_options.png  used on input line 69.
-(pdftex.def)             Requested size: 390.0pt x 222.09721pt.
+(pdftex.def)             Requested size: 390.0pt x 219.3502pt.
 
 
 Package caption Warning: The option `hypcap=true' will be ignored for this
@@ -434,11 +434,11 @@ Package caption Warning: The option `hypcap=true' will be ignored for this
 See the caption package documentation for explanation.
 
 [4 <./images/Empty_config_screen.png>]
-<images/Removing_records.png, id=116, 2079.77pt x 1184.425pt>
+<images/Removing_records.png, id=116, 4111.36pt x 2312.64pt>
 File: images/Removing_records.png Graphic file (type png)
 <use images/Removing_records.png>
 Package pdftex.def Info: images/Removing_records.png  used on input line 82.
-(pdftex.def)             Requested size: 390.0pt x 222.09721pt.
+(pdftex.def)             Requested size: 390.0pt x 219.3502pt.
 
 
 Package caption Warning: The option `hypcap=true' will be ignored for this
@@ -446,11 +446,11 @@ Package caption Warning: The option `hypcap=true' will be ignored for this
 See the caption package documentation for explanation.
 
 [5 <./images/Edit_options.png>]
-<images/Duplicate_records.png, id=123, 2055.68pt x 1156.32pt>
+<images/Duplicate_records.png, id=123, 4111.36pt x 2312.64pt>
 File: images/Duplicate_records.png Graphic file (type png)
 <use images/Duplicate_records.png>
 Package pdftex.def Info: images/Duplicate_records.png  used on input line 93.
-(pdftex.def)             Requested size: 390.0pt x 219.36784pt.
+(pdftex.def)             Requested size: 390.0pt x 219.3502pt.
 
 
 Package caption Warning: The option `hypcap=true' will be ignored for this
@@ -458,11 +458,11 @@ Package caption Warning: The option `hypcap=true' will be ignored for this
 See the caption package documentation for explanation.
 
 [6 <./images/Removing_records.png>]
-<images/Shift_entries.png, id=130, 2079.77pt x 1184.425pt>
+<images/Shift_entries.png, id=130, 4111.36pt x 2312.64pt>
 File: images/Shift_entries.png Graphic file (type png)
 <use images/Shift_entries.png>
 Package pdftex.def Info: images/Shift_entries.png  used on input line 101.
-(pdftex.def)             Requested size: 390.0pt x 222.09721pt.
+(pdftex.def)             Requested size: 390.0pt x 219.3502pt.
 
 
 Package caption Warning: The option `hypcap=true' will be ignored for this
@@ -470,11 +470,11 @@ Package caption Warning: The option `hypcap=true' will be ignored for this
 See the caption package documentation for explanation.
 
 [7 <./images/Duplicate_records.png>]
-<images/Move_entries.png, id=138, 2055.68pt x 1156.32pt>
+<images/Move_entries.png, id=138, 4111.36pt x 2312.64pt>
 File: images/Move_entries.png Graphic file (type png)
 <use images/Move_entries.png>
 Package pdftex.def Info: images/Move_entries.png  used on input line 114.
-(pdftex.def)             Requested size: 390.0pt x 219.36784pt.
+(pdftex.def)             Requested size: 390.0pt x 219.3502pt.
 
 
 Package caption Warning: The option `hypcap=true' will be ignored for this
@@ -482,11 +482,11 @@ Package caption Warning: The option `hypcap=true' will be ignored for this
 See the caption package documentation for explanation.
 
 [8 <./images/Shift_entries.png>]
-<images/Overview.png, id=145, 2055.68pt x 1156.32pt>
+<images/Overview.png, id=145, 4111.36pt x 2312.64pt>
 File: images/Overview.png Graphic file (type png)
 <use images/Overview.png>
 Package pdftex.def Info: images/Overview.png  used on input line 126.
-(pdftex.def)             Requested size: 390.0pt x 219.36784pt.
+(pdftex.def)             Requested size: 390.0pt x 219.3502pt.
 
 
 Package caption Warning: The option `hypcap=true' will be ignored for this
@@ -498,22 +498,22 @@ Underfull \hbox (badness 10000) in paragraph at lines 129--131
 
  []
 
-<images/Export_data.png, id=152, 2055.68pt x 1156.32pt>
+<images/Export_data.png, id=152, 4111.36pt x 2312.64pt>
 File: images/Export_data.png Graphic file (type png)
 <use images/Export_data.png>
 Package pdftex.def Info: images/Export_data.png  used on input line 134.
-(pdftex.def)             Requested size: 390.0pt x 219.36784pt.
+(pdftex.def)             Requested size: 390.0pt x 219.3502pt.
 
 Package caption Warning: The option `hypcap=true' will be ignored for this
 (caption)                particular \caption on input line 135.
 See the caption package documentation for explanation.
 
 [10 <./images/Overview.png>]
-<images/Import_data.png, id=160, 2079.77pt x 1184.425pt>
+<images/Import_data.png, id=160, 4111.36pt x 2312.64pt>
 File: images/Import_data.png Graphic file (type png)
 <use images/Import_data.png>
 Package pdftex.def Info: images/Import_data.png  used on input line 142.
-(pdftex.def)             Requested size: 390.0pt x 222.09721pt.
+(pdftex.def)             Requested size: 390.0pt x 219.3502pt.
 
 
 Package caption Warning: The option `hypcap=true' will be ignored for this
@@ -521,11 +521,11 @@ Package caption Warning: The option `hypcap=true' will be ignored for this
 See the caption package documentation for explanation.
 
 [11 <./images/Export_data.png>]
-<images/Misc_settings.png, id=167, 2055.68pt x 1156.32pt>
+<images/Misc_settings.png, id=167, 4111.36pt x 2312.64pt>
 File: images/Misc_settings.png Graphic file (type png)
 <use images/Misc_settings.png>
 Package pdftex.def Info: images/Misc_settings.png  used on input line 150.
-(pdftex.def)             Requested size: 390.0pt x 219.36784pt.
+(pdftex.def)             Requested size: 390.0pt x 219.3502pt.
 
 
 Package caption Warning: The option `hypcap=true' will be ignored for this
@@ -533,21 +533,39 @@ Package caption Warning: The option `hypcap=true' will be ignored for this
 See the caption package documentation for explanation.
 
 [12 <./images/Import_data.png>]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 164.
- [13 <./images/Misc_settings.png>]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 164.
+<images/Check_tags.png, id=174, 4111.36pt x 2312.64pt>
+File: images/Check_tags.png Graphic file (type png)
+<use images/Check_tags.png>
+Package pdftex.def Info: images/Check_tags.png  used on input line 165.
+(pdftex.def)             Requested size: 390.0pt x 219.3502pt.
+
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 166.
+See the caption package documentation for explanation.
+
+[13 <./images/Misc_settings.png>]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 172.
+ [14 <./images/Check_tags.png>]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 172.
  (./manual.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 164.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 164.
-Package rerunfilecheck Info: File `manual.out' has not changed.
-(rerunfilecheck)             Checksum: E115B3CBCAFA231C518B0AEA540D8CC7;1001.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 164.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 172.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 172.
+
+Package rerunfilecheck Warning: File `manual.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+Package rerunfilecheck Info: Checksums for `manual.out':
+(rerunfilecheck)             Before: E115B3CBCAFA231C518B0AEA540D8CC7;1001
+(rerunfilecheck)             After:  60E324CA3D958B851A795CFC5CE00579;1062.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 172.
  ) 
 Here is how much of TeX's memory you used:
- 6961 strings out of 492616
- 108214 string characters out of 6129481
+ 6969 strings out of 492616
+ 108362 string characters out of 6129481
  201392 words of memory out of 5000000
- 10767 multiletter control sequences out of 15000+600000
+ 10771 multiletter control sequences out of 15000+600000
  8977 words of font info for 32 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  36i,6n,77p,248b,545s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -556,10 +574,10 @@ Here is how much of TeX's memory you used:
 /usr/local/texlive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></u
 sr/local/texlive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></us
 r/local/texlive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb>
-Output written on manual.pdf (13 pages, 2171433 bytes).
+Output written on manual.pdf (14 pages, 2449200 bytes).
 PDF statistics:
- 211 PDF objects out of 1000 (max. 8388607)
- 167 compressed objects within 2 object streams
- 42 named destinations out of 1000 (max. 500000)
- 184 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 220 PDF objects out of 1000 (max. 8388607)
+ 173 compressed objects within 2 object streams
+ 45 named destinations out of 1000 (max. 500000)
+ 189 words of extra memory for PDF output out of 10000 (max. 10000000)
 
