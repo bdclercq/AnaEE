@@ -14,8 +14,8 @@
                                 <a>{{ fatis[f] }}</a>
                                 <button id="cp" type="button" onclick='
                                         var s = "";
-                                        {% for v in range(8) %}
-                                            if(document.getElementById({{ valvenumbers[(f*8)+v] }}).checked === true){
+                                        {% for v in range(12) %}
+                                            if(document.getElementById({{ valvenumbers[(f*12)+v] }}).checked === true){
                                             s += ({{ v }}+1).toString();
                                             }
                                         {% endfor %}
@@ -26,7 +26,7 @@
                                     var s = document.getElementById("values");
                                     var to_set = [];
                                     for(var i = 0; i<s.innerHTML.length; i++){
-                                        var index = {{ f*8 }}+parseInt(s.innerHTML[i],10);
+                                        var index = {{ f*12 }}+parseInt(s.innerHTML[i],10);
                                         to_set.push(index);
                                         document.getElementById(index).checked = true;
                                     }
@@ -34,15 +34,15 @@
                                 </button>
                                 <button id="cp" type="button" onclick='
                                     var s = "";
-                                    {% for v in range(8) %}
-                                        if(document.getElementById({{ valvenumbers[(f*8)+v] }}).checked === true){
-                                        document.getElementById({{ valvenumbers[(f*8)+v] }}).checked = false;
+                                    {% for v in range(12) %}
+                                        if(document.getElementById({{ valvenumbers[(f*12)+v] }}).checked === true){
+                                        document.getElementById({{ valvenumbers[(f*12)+v] }}).checked = false;
                                         }
                                     {% endfor %}
                                     var s = document.getElementById("values");
                                     var to_set = [];
                                     for(var i = 0; i<s.innerHTML.length; i++){
-                                        var index = {{ f*8 }}+parseInt(s.innerHTML[i],10);
+                                        var index = {{ f*12 }}+parseInt(s.innerHTML[i],10);
                                         to_set.push(index);
                                         document.getElementById(index).checked = true;
                                     }
@@ -50,24 +50,24 @@
                                 </button>
                                 <button id="cp" type="button" onclick='
                                         var s = "";
-                                        {% for v in range(8) %}
-                                            if(document.getElementById({{ valvenumbers[(f*8)+v] }}).checked === true){
-                                            document.getElementById({{ valvenumbers[(f*8)+v] }}).checked = false;
+                                        {% for v in range(12) %}
+                                            if(document.getElementById({{ valvenumbers[(f*12)+v] }}).checked === true){
+                                            document.getElementById({{ valvenumbers[(f*12)+v] }}).checked = false;
                                             }
                                         {% endfor %}
                                         '>Clear
                                 </button><br>
                                 <div class="col-xl-3 col-md-6 mb-4">
-                                    {% for v in range(8) %}
-                                        {% if valvenumbers[(f*8)+v] in nrs %}
+                                    {% for v in range(12) %}
+                                        {% if valvenumbers[(f*12)+v] in nrs %}
                                             <input type="checkbox"
-                                                   name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }}
-                                                   id={{ valvenumbers[(f*8)+v] }} checked>
+                                                   name={{ valves[v] }} value={{ valvenumbers[(f*12)+v] }}
+                                                   id={{ valvenumbers[(f*12)+v] }} checked>
                                             {{ valves[v] }}<br>
                                         {% else %}
                                             <input type="checkbox"
-                                                   name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }}
-                                                   id={{ valvenumbers[(f*8)+v] }}>
+                                                   name={{ valves[v] }} value={{ valvenumbers[(f*12)+v] }}
+                                                   id={{ valvenumbers[(f*12)+v] }}>
                                             {{ valves[v] }}<br>
                                         {% endif %}
                                     {% endfor %}
@@ -80,8 +80,8 @@
                                 <a>{{ fatis[f] }}</a>
                                 <button id="cp" type="button" onclick='
                                         var s = "";
-                                        {% for v in range(8) %}
-                                            if(document.getElementById({{ valvenumbers[(f*8)+v] }}).checked === true){
+                                        {% for v in range(12) %}
+                                            if(document.getElementById({{ valvenumbers[(f*12)+v] }}).checked === true){
                                             s += ({{ v }}+1).toString();
                                             }
                                         {% endfor %}
@@ -92,7 +92,7 @@
                                     var s = document.getElementById("values");
                                     var to_set = [];
                                     for(var i = 0; i<s.innerHTML.length; i++){
-                                        var index = {{ f*8 }}+parseInt(s.innerHTML[i],10);
+                                        var index = {{ f*12 }}+parseInt(s.innerHTML[i],10);
                                         to_set.push(index);
                                         document.getElementById(index).checked = true;
                                     }
@@ -100,15 +100,15 @@
                                 </button>
                                 <button id="cp" type="button" onclick='
                                     var s = "";
-                                    {% for v in range(8) %}
-                                        if(document.getElementById({{ valvenumbers[(f*8)+v] }}).checked === true){
-                                        document.getElementById({{ valvenumbers[(f*8)+v] }}).checked = false;
+                                    {% for v in range(12) %}
+                                        if(document.getElementById({{ valvenumbers[(f*12)+v] }}).checked === true){
+                                        document.getElementById({{ valvenumbers[(f*12)+v] }}).checked = false;
                                         }
                                     {% endfor %}
                                     var s = document.getElementById("values");
                                     var to_set = [];
                                     for(var i = 0; i<s.innerHTML.length; i++){
-                                        var index = {{ f*8 }}+parseInt(s.innerHTML[i],10);
+                                        var index = {{ f*12 }}+parseInt(s.innerHTML[i],10);
                                         to_set.push(index);
                                         document.getElementById(index).checked = true;
                                     }
@@ -116,24 +116,24 @@
                                 </button>
                                 <button id="cp" type="button" onclick='
                                         var s = "";
-                                        {% for v in range(8) %}
-                                            if(document.getElementById({{ valvenumbers[(f*8)+v] }}).checked === true){
-                                            document.getElementById({{ valvenumbers[(f*8)+v] }}).checked = false;
+                                        {% for v in range(12) %}
+                                            if(document.getElementById({{ valvenumbers[(f*12)+v] }}).checked === true){
+                                            document.getElementById({{ valvenumbers[(f*12)+v] }}).checked = false;
                                             }
                                         {% endfor %}
                                         '>Clear
                                 </button><br>
                                 <div class="col-xl-3 col-md-6 mb-4">
-                                    {% for v in range(8) %}
-                                        {% if valvenumbers[(f*8)+v] in nrs %}
+                                    {% for v in range(12) %}
+                                        {% if valvenumbers[(f*12)+v] in nrs %}
                                             <input type="checkbox"
-                                                   name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }}
-                                                   id={{ valvenumbers[(f*8)+v] }} checked>
+                                                   name={{ valves[v] }} value={{ valvenumbers[(f*12)+v] }}
+                                                   id={{ valvenumbers[(f*12)+v] }} checked>
                                             {{ valves[v] }}<br>
                                         {% else %}
                                             <input type="checkbox"
-                                                   name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }}
-                                                   id={{ valvenumbers[(f*8)+v] }}>
+                                                   name={{ valves[v] }} value={{ valvenumbers[(f*12)+v] }}
+                                                   id={{ valvenumbers[(f*12)+v] }}>
                                             {{ valves[v] }}<br>
                                         {% endif %}
                                     {% endfor %}
@@ -146,8 +146,8 @@
                                 <a>{{ fatis[f] }}</a>
                                 <button id="cp" type="button" onclick='
                                         var s = "";
-                                        {% for v in range(8) %}
-                                            if(document.getElementById({{ valvenumbers[(f*8)+v] }}).checked === true){
+                                        {% for v in range(12) %}
+                                            if(document.getElementById({{ valvenumbers[(f*12)+v] }}).checked === true){
                                             s += ({{ v }}+1).toString();
                                             }
                                         {% endfor %}
@@ -158,7 +158,7 @@
                                     var s = document.getElementById("values");
                                     var to_set = [];
                                     for(var i = 0; i<s.innerHTML.length; i++){
-                                        var index = {{ f*8 }}+parseInt(s.innerHTML[i],10);
+                                        var index = {{ f*12 }}+parseInt(s.innerHTML[i],10);
                                         to_set.push(index);
                                         document.getElementById(index).checked = true;
                                     }
@@ -166,15 +166,15 @@
                                 </button>
                                 <button id="cp" type="button" onclick='
                                     var s = "";
-                                    {% for v in range(8) %}
-                                        if(document.getElementById({{ valvenumbers[(f*8)+v] }}).checked === true){
-                                        document.getElementById({{ valvenumbers[(f*8)+v] }}).checked = false;
+                                    {% for v in range(12) %}
+                                        if(document.getElementById({{ valvenumbers[(f*12)+v] }}).checked === true){
+                                        document.getElementById({{ valvenumbers[(f*12)+v] }}).checked = false;
                                         }
                                     {% endfor %}
                                     var s = document.getElementById("values");
                                     var to_set = [];
                                     for(var i = 0; i<s.innerHTML.length; i++){
-                                        var index = {{ f*8 }}+parseInt(s.innerHTML[i],10);
+                                        var index = {{ f*12 }}+parseInt(s.innerHTML[i],10);
                                         to_set.push(index);
                                         document.getElementById(index).checked = true;
                                     }
@@ -182,24 +182,24 @@
                                 </button>
                                 <button id="cp" type="button" onclick='
                                         var s = "";
-                                        {% for v in range(8) %}
-                                            if(document.getElementById({{ valvenumbers[(f*8)+v] }}).checked === true){
-                                            document.getElementById({{ valvenumbers[(f*8)+v] }}).checked = false;
+                                        {% for v in range(12) %}
+                                            if(document.getElementById({{ valvenumbers[(f*12)+v] }}).checked === true){
+                                            document.getElementById({{ valvenumbers[(f*12)+v] }}).checked = false;
                                             }
                                         {% endfor %}
                                         '>Clear
                                 </button><br>
                                 <div class="col-xl-3 col-md-6 mb-4">
-                                    {% for v in range(8) %}
-                                        {% if valvenumbers[(f*8)+v] in nrs %}
+                                    {% for v in range(12) %}
+                                        {% if valvenumbers[(f*12)+v] in nrs %}
                                             <input type="checkbox"
-                                                   name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }}
-                                                   id={{ valvenumbers[(f*8)+v] }} checked>
+                                                   name={{ valves[v] }} value={{ valvenumbers[(f*12)+v] }}
+                                                   id={{ valvenumbers[(f*12)+v] }} checked>
                                             {{ valves[v] }}<br>
                                         {% else %}
                                             <input type="checkbox"
-                                                   name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }}
-                                                   id={{ valvenumbers[(f*8)+v] }}>
+                                                   name={{ valves[v] }} value={{ valvenumbers[(f*12)+v] }}
+                                                   id={{ valvenumbers[(f*12)+v] }}>
                                             {{ valves[v] }}<br>
                                         {% endif %}
                                     {% endfor %}
@@ -212,8 +212,8 @@
                                 <a>{{ fatis[f] }}</a>
                                 <button id="cp" type="button" onclick='
                                         var s = "";
-                                        {% for v in range(8) %}
-                                            if(document.getElementById({{ valvenumbers[(f*8)+v] }}).checked === true){
+                                        {% for v in range(12) %}
+                                            if(document.getElementById({{ valvenumbers[(f*12)+v] }}).checked === true){
                                             s += ({{ v }}+1).toString();
                                             }
                                         {% endfor %}
@@ -224,7 +224,7 @@
                                     var s = document.getElementById("values");
                                     var to_set = [];
                                     for(var i = 0; i<s.innerHTML.length; i++){
-                                        var index = {{ f*8 }}+parseInt(s.innerHTML[i],10);
+                                        var index = {{ f*12 }}+parseInt(s.innerHTML[i],10);
                                         to_set.push(index);
                                         document.getElementById(index).checked = true;
                                     }
@@ -232,15 +232,15 @@
                                 </button>
                                 <button id="cp" type="button" onclick='
                                     var s = "";
-                                    {% for v in range(8) %}
-                                        if(document.getElementById({{ valvenumbers[(f*8)+v] }}).checked === true){
-                                        document.getElementById({{ valvenumbers[(f*8)+v] }}).checked = false;
+                                    {% for v in range(12) %}
+                                        if(document.getElementById({{ valvenumbers[(f*12)+v] }}).checked === true){
+                                        document.getElementById({{ valvenumbers[(f*12)+v] }}).checked = false;
                                         }
                                     {% endfor %}
                                     var s = document.getElementById("values");
                                     var to_set = [];
                                     for(var i = 0; i<s.innerHTML.length; i++){
-                                        var index = {{ f*8 }}+parseInt(s.innerHTML[i],10);
+                                        var index = {{ f*12 }}+parseInt(s.innerHTML[i],10);
                                         to_set.push(index);
                                         document.getElementById(index).checked = true;
                                     }
@@ -248,24 +248,24 @@
                                 </button>
                                 <button id="cp" type="button" onclick='
                                         var s = "";
-                                        {% for v in range(8) %}
-                                            if(document.getElementById({{ valvenumbers[(f*8)+v] }}).checked === true){
-                                            document.getElementById({{ valvenumbers[(f*8)+v] }}).checked = false;
+                                        {% for v in range(12) %}
+                                            if(document.getElementById({{ valvenumbers[(f*12)+v] }}).checked === true){
+                                            document.getElementById({{ valvenumbers[(f*12)+v] }}).checked = false;
                                             }
                                         {% endfor %}
                                         '>Clear
                                 </button><br>
                                 <div class="col-xl-3 col-md-6 mb-4">
-                                    {% for v in range(8) %}
-                                        {% if valvenumbers[(f*8)+v] in nrs %}
+                                    {% for v in range(12) %}
+                                        {% if valvenumbers[(f*12)+v] in nrs %}
                                             <input type="checkbox"
-                                                   name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }}
-                                                   id={{ valvenumbers[(f*8)+v] }} checked>
+                                                   name={{ valves[v] }} value={{ valvenumbers[(f*12)+v] }}
+                                                   id={{ valvenumbers[(f*12)+v] }} checked>
                                             {{ valves[v] }}<br>
                                         {% else %}
                                             <input type="checkbox"
-                                                   name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }}
-                                                   id={{ valvenumbers[(f*8)+v] }}>
+                                                   name={{ valves[v] }} value={{ valvenumbers[(f*12)+v] }}
+                                                   id={{ valvenumbers[(f*12)+v] }}>
                                             {{ valves[v] }}<br>
                                         {% endif %}
                                     {% endfor %}
@@ -278,8 +278,8 @@
                                 <a>{{ fatis[f] }}</a>
                                 <button id="cp" type="button" onclick='
                                         var s = "";
-                                        {% for v in range(8) %}
-                                            if(document.getElementById({{ valvenumbers[(f*8)+v] }}).checked === true){
+                                        {% for v in range(12) %}
+                                            if(document.getElementById({{ valvenumbers[(f*12)+v] }}).checked === true){
                                             s += ({{ v }}+1).toString();
                                             }
                                         {% endfor %}
@@ -290,7 +290,7 @@
                                     var s = document.getElementById("values");
                                     var to_set = [];
                                     for(var i = 0; i<s.innerHTML.length; i++){
-                                        var index = {{ f*8 }}+parseInt(s.innerHTML[i],10);
+                                        var index = {{ f*12 }}+parseInt(s.innerHTML[i],10);
                                         to_set.push(index);
                                         document.getElementById(index).checked = true;
                                     }
@@ -298,15 +298,15 @@
                                 </button>
                                 <button id="cp" type="button" onclick='
                                     var s = "";
-                                    {% for v in range(8) %}
-                                        if(document.getElementById({{ valvenumbers[(f*8)+v] }}).checked === true){
-                                        document.getElementById({{ valvenumbers[(f*8)+v] }}).checked = false;
+                                    {% for v in range(12) %}
+                                        if(document.getElementById({{ valvenumbers[(f*12)+v] }}).checked === true){
+                                        document.getElementById({{ valvenumbers[(f*12)+v] }}).checked = false;
                                         }
                                     {% endfor %}
                                     var s = document.getElementById("values");
                                     var to_set = [];
                                     for(var i = 0; i<s.innerHTML.length; i++){
-                                        var index = {{ f*8 }}+parseInt(s.innerHTML[i],10);
+                                        var index = {{ f*12 }}+parseInt(s.innerHTML[i],10);
                                         to_set.push(index);
                                         document.getElementById(index).checked = true;
                                     }
@@ -314,17 +314,17 @@
                                 </button>
                                 <button id="cp" type="button" onclick='
                                         var s = "";
-                                        {% for v in range(8) %}
-                                            if(document.getElementById({{ valvenumbers[(f*8)+v] }}).checked === true){
-                                            document.getElementById({{ valvenumbers[(f*8)+v] }}).checked = false;
+                                        {% for v in range(12) %}
+                                            if(document.getElementById({{ valvenumbers[(f*12)+v] }}).checked === true){
+                                            document.getElementById({{ valvenumbers[(f*12)+v] }}).checked = false;
                                             }
                                         {% endfor %}
                                         '>Clear
                                 </button><br>
                                 <div class="col-xl-3 col-md-6 mb-4">
-                                    {% for v in range(8) %}
-                                        <input type="checkbox" name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }}
-                                               id={{ valvenumbers[(f*8)+v] }}>
+                                    {% for v in range(12) %}
+                                        <input type="checkbox" name={{ valves[v] }} value={{ valvenumbers[(f*12)+v] }}
+                                               id={{ valvenumbers[(f*12)+v] }}>
                                         {{ valves[v] }}<br>
                                     {% endfor %}
                                 </div>
@@ -336,8 +336,8 @@
                                 <a>{{ fatis[f] }}</a>
                                 <button id="cp" type="button" onclick='
                                         var s = "";
-                                        {% for v in range(8) %}
-                                            if(document.getElementById({{ valvenumbers[(f*8)+v] }}).checked === true){
+                                        {% for v in range(12) %}
+                                            if(document.getElementById({{ valvenumbers[(f*12)+v] }}).checked === true){
                                             s += ({{ v }}+1).toString();
                                             }
                                         {% endfor %}
@@ -348,7 +348,7 @@
                                     var s = document.getElementById("values");
                                     var to_set = [];
                                     for(var i = 0; i<s.innerHTML.length; i++){
-                                        var index = {{ f*8 }}+parseInt(s.innerHTML[i],10);
+                                        var index = {{ f*12 }}+parseInt(s.innerHTML[i],10);
                                         to_set.push(index);
                                         document.getElementById(index).checked = true;
                                     }
@@ -356,15 +356,15 @@
                                 </button>
                                 <button id="cp" type="button" onclick='
                                     var s = "";
-                                    {% for v in range(8) %}
-                                        if(document.getElementById({{ valvenumbers[(f*8)+v] }}).checked === true){
-                                        document.getElementById({{ valvenumbers[(f*8)+v] }}).checked = false;
+                                    {% for v in range(12) %}
+                                        if(document.getElementById({{ valvenumbers[(f*12)+v] }}).checked === true){
+                                        document.getElementById({{ valvenumbers[(f*12)+v] }}).checked = false;
                                         }
                                     {% endfor %}
                                     var s = document.getElementById("values");
                                     var to_set = [];
                                     for(var i = 0; i<s.innerHTML.length; i++){
-                                        var index = {{ f*8 }}+parseInt(s.innerHTML[i],10);
+                                        var index = {{ f*12 }}+parseInt(s.innerHTML[i],10);
                                         to_set.push(index);
                                         document.getElementById(index).checked = true;
                                     }
@@ -372,17 +372,17 @@
                                 </button>
                                 <button id="cp" type="button" onclick='
                                         var s = "";
-                                        {% for v in range(8) %}
-                                            if(document.getElementById({{ valvenumbers[(f*8)+v] }}).checked === true){
-                                            document.getElementById({{ valvenumbers[(f*8)+v] }}).checked = false;
+                                        {% for v in range(12) %}
+                                            if(document.getElementById({{ valvenumbers[(f*12)+v] }}).checked === true){
+                                            document.getElementById({{ valvenumbers[(f*12)+v] }}).checked = false;
                                             }
                                         {% endfor %}
                                         '>Clear
                                 </button><br>
                                 <div class="col-xl-3 col-md-6 mb-4">
-                                    {% for v in range(8) %}
-                                        <input type="checkbox" name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }}
-                                               id={{ valvenumbers[(f*8)+v] }}>
+                                    {% for v in range(12) %}
+                                        <input type="checkbox" name={{ valves[v] }} value={{ valvenumbers[(f*12)+v] }}
+                                               id={{ valvenumbers[(f*12)+v] }}>
                                         {{ valves[v] }}<br>
                                     {% endfor %}
                                 </div>
@@ -394,8 +394,8 @@
                                 <a>{{ fatis[f] }}</a>
                                 <button id="cp" type="button" onclick='
                                         var s = "";
-                                        {% for v in range(8) %}
-                                            if(document.getElementById({{ valvenumbers[(f*8)+v] }}).checked === true){
+                                        {% for v in range(12) %}
+                                            if(document.getElementById({{ valvenumbers[(f*12)+v] }}).checked === true){
                                             s += ({{ v }}+1).toString();
                                             }
                                         {% endfor %}
@@ -406,7 +406,7 @@
                                     var s = document.getElementById("values");
                                     var to_set = [];
                                     for(var i = 0; i<s.innerHTML.length; i++){
-                                        var index = {{ f*8 }}+parseInt(s.innerHTML[i],10);
+                                        var index = {{ f*12 }}+parseInt(s.innerHTML[i],10);
                                         to_set.push(index);
                                         document.getElementById(index).checked = true;
                                     }
@@ -414,15 +414,15 @@
                                 </button>
                                 <button id="cp" type="button" onclick='
                                     var s = "";
-                                    {% for v in range(8) %}
-                                        if(document.getElementById({{ valvenumbers[(f*8)+v] }}).checked === true){
-                                        document.getElementById({{ valvenumbers[(f*8)+v] }}).checked = false;
+                                    {% for v in range(12) %}
+                                        if(document.getElementById({{ valvenumbers[(f*12)+v] }}).checked === true){
+                                        document.getElementById({{ valvenumbers[(f*12)+v] }}).checked = false;
                                         }
                                     {% endfor %}
                                     var s = document.getElementById("values");
                                     var to_set = [];
                                     for(var i = 0; i<s.innerHTML.length; i++){
-                                        var index = {{ f*8 }}+parseInt(s.innerHTML[i],10);
+                                        var index = {{ f*12 }}+parseInt(s.innerHTML[i],10);
                                         to_set.push(index);
                                         document.getElementById(index).checked = true;
                                     }
@@ -430,17 +430,17 @@
                                 </button>
                                 <button id="cp" type="button" onclick='
                                         var s = "";
-                                        {% for v in range(8) %}
-                                            if(document.getElementById({{ valvenumbers[(f*8)+v] }}).checked === true){
-                                            document.getElementById({{ valvenumbers[(f*8)+v] }}).checked = false;
+                                        {% for v in range(12) %}
+                                            if(document.getElementById({{ valvenumbers[(f*12)+v] }}).checked === true){
+                                            document.getElementById({{ valvenumbers[(f*12)+v] }}).checked = false;
                                             }
                                         {% endfor %}
                                         '>Clear
                                 </button><br>
                                 <div class="col-xl-3 col-md-6 mb-4">
-                                    {% for v in range(8) %}
-                                        <input type="checkbox" name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }}
-                                               id={{ valvenumbers[(f*8)+v] }}>
+                                    {% for v in range(12) %}
+                                        <input type="checkbox" name={{ valves[v] }} value={{ valvenumbers[(f*12)+v] }}
+                                               id={{ valvenumbers[(f*12)+v] }}>
                                         {{ valves[v] }}<br>
                                     {% endfor %}
                                 </div>
@@ -452,8 +452,8 @@
                                 <a>{{ fatis[f] }}</a>
                                 <button id="cp" type="button" onclick='
                                         var s = "";
-                                        {% for v in range(8) %}
-                                            if(document.getElementById({{ valvenumbers[(f*8)+v] }}).checked === true){
+                                        {% for v in range(12) %}
+                                            if(document.getElementById({{ valvenumbers[(f*12)+v] }}).checked === true){
                                             s += ({{ v }}+1).toString();
                                             }
                                         {% endfor %}
@@ -464,7 +464,7 @@
                                     var s = document.getElementById("values");
                                     var to_set = [];
                                     for(var i = 0; i<s.innerHTML.length; i++){
-                                        var index = {{ f*8 }}+parseInt(s.innerHTML[i],10);
+                                        var index = {{ f*12 }}+parseInt(s.innerHTML[i],10);
                                         to_set.push(index);
                                         document.getElementById(index).checked = true;
                                     }
@@ -472,15 +472,15 @@
                                 </button>
                                 <button id="cp" type="button" onclick='
                                     var s = "";
-                                    {% for v in range(8) %}
-                                        if(document.getElementById({{ valvenumbers[(f*8)+v] }}).checked === true){
-                                        document.getElementById({{ valvenumbers[(f*8)+v] }}).checked = false;
+                                    {% for v in range(12) %}
+                                        if(document.getElementById({{ valvenumbers[(f*12)+v] }}).checked === true){
+                                        document.getElementById({{ valvenumbers[(f*12)+v] }}).checked = false;
                                         }
                                     {% endfor %}
                                     var s = document.getElementById("values");
                                     var to_set = [];
                                     for(var i = 0; i<s.innerHTML.length; i++){
-                                        var index = {{ f*8 }}+parseInt(s.innerHTML[i],10);
+                                        var index = {{ f*12 }}+parseInt(s.innerHTML[i],10);
                                         to_set.push(index);
                                         document.getElementById(index).checked = true;
                                     }
@@ -488,17 +488,17 @@
                                 </button>
                                 <button id="cp" type="button" onclick='
                                     var s = "";
-                                    {% for v in range(8) %}
-                                        if(document.getElementById({{ valvenumbers[(f*8)+v] }}).checked === true){
-                                        document.getElementById({{ valvenumbers[(f*8)+v] }}).checked = false;
+                                    {% for v in range(12) %}
+                                        if(document.getElementById({{ valvenumbers[(f*12)+v] }}).checked === true){
+                                        document.getElementById({{ valvenumbers[(f*12)+v] }}).checked = false;
                                         }
                                     {% endfor %}
                                     '>Clear
                                 </button><br>
                                 <div class="col-xl-3 col-md-6 mb-4">
-                                    {% for v in range(8) %}
-                                        <input type="checkbox" name={{ valves[v] }} value={{ valvenumbers[(f*8)+v] }}
-                                               id={{ valvenumbers[(f*8)+v] }}>
+                                    {% for v in range(12) %}
+                                        <input type="checkbox" name={{ valves[v] }} value={{ valvenumbers[(f*12)+v] }}
+                                               id={{ valvenumbers[(f*12)+v] }}>
                                         {{ valves[v] }}<br>
                                     {% endfor %}
                                 </div>

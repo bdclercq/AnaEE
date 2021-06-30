@@ -222,9 +222,11 @@ def export_data(filename):
                     value = (value << 1) | bit
                 f.write(str(value))
                 f.write('\n')
-                f.write(str(conf.configtype))
-                f.write('\n')
+                # f.write(str(conf.configtype))
+                # f.write('\n')
                 j = j + valves
+            f.write(str(conf.configtype))
+            f.write('\n')
             ### Fill row
             for i in range(3):
                 f.write(str(0))
@@ -247,7 +249,7 @@ def import_data_csv(filename, overwrite):
         first = True
         with open(filename, mode='r') as csv_file:
             csv_reader = csv.DictReader(csv_file)
-            line_count = 0
+            line_count = 1
             skip = 1
             record = {"id": 0, "year": 0, "month": 0, "day": 0, "hour": 0, "minute": 0, "second": 0, "f1": 0,
                       "f2": 0, "f3": 0, "f4": 0, "f5": 0, "f6": 0, "f7": 0, "f8": 0, "f9": 0, "f10": 0,
@@ -257,21 +259,22 @@ def import_data_csv(filename, overwrite):
                     "19": "f9", "20": "f10", "21": "f11", "22": "f12", "23": "status"}
             for row in csv_reader:
                 if first:
-                    if line_count <= 5:
-                        record[keys[str(line_count+1)]] = row['1']
+                    if line_count <= 6:
+                        record[keys[str(line_count)]] = row['1']
                         line_count += 1
-                    elif 5 < line_count < 10:
+                    elif 6 < line_count < 11:
                         line_count += 1
-                    elif 10 <= line_count <= 22:
+                    elif 11 <= line_count <= 23:
                         if skip:
-                            record[keys[str(line_count+1)]] = row['1']
+                            record[keys[str(line_count)]] = row['1']
                             skip = 0
                             line_count += 1
                         else:
                             skip = 1
-                    elif 22 < line_count < 24:
+                    elif 23 < line_count < 27:
                         line_count += 1
-                    elif line_count == 24:
+                    elif line_count == 27:
+                        print(record)
                         date = datetime.date(int(record["year"]), int(record["month"]), int(record["day"]))
                         time = datetime.time(int(record["hour"]), int(record["minute"]), int(record["second"]))
                         timestamp = datetime.datetime.combine(date, time)
@@ -305,6 +308,7 @@ def import_data_csv(filename, overwrite):
                     elif 23 < line_count < 25:
                         line_count += 1
                     elif line_count == 25:
+                        print(record)
                         date = datetime.date(int(record["year"]), int(record["month"]), int(record["day"]))
                         time = datetime.time(int(record["hour"]), int(record["minute"]), int(record["second"]))
                         timestamp = datetime.datetime.combine(date, time)
@@ -334,20 +338,23 @@ def import_data_emi(filename, overwrite):
         #print(overwrite)
         with open(filename, mode='rb') as emi_file:
             record = ["id", "year", "month", "day", "hour", "minute", "second", "f1", "f2", "f3", "f4", "f5", "f6",
-                      "f7", "f8", "f9", "f10", "f11", "f12", "status"]
+                      "f7", "f8", "f9", "status"]
             value = emi_file.read(2)
             while value != '':
                 try:
-                    # Only the first 20 values have meaning
-                    if count <= 19:
+                    # print(value)
+                    # print(convert_to_dec(binascii.hexlify(value)))
+                    # Only the first 16 values have meaning
+                    if count <= 16:
                         record[count] = convert_to_dec(binascii.hexlify(value))
                         value = emi_file.read(2)
                         count += 1
-                    # elif 14 <= count < 19:
+                    # elif 17 <= count < 18:
                     #     # Contains only zero values
                     #     value = emi_file.read(2)
                     #     count += 1
-                    elif count == 20:
+                    elif count == 17:
+                        print(record)
                         # Read last zero
                         value = emi_file.read(2)
                         # Write record to db
@@ -357,10 +364,12 @@ def import_data_emi(filename, overwrite):
                         exists = db.session.query(ValveConfiguration.timestamp).filter_by(
                             timestamp=timestamp).scalar() is not None
                         bs = ''
-                        for i in range(7, 19):
+                        # 144 (12 fatis * 12 valves) divided by 16 (bits) equals 9
+                        for i in range(7, 16):
                             bs += "{0:016b}".format(int(record[i]))
                         # bs += '0000000'
-                        conftype = int(record[19])
+                        conftype = int(record[16])
+                        print(bs)
                         # Skip existing entries
                         if not exists:
                             #print("Adding record with type {0}".format(conftype))
@@ -372,9 +381,13 @@ def import_data_emi(filename, overwrite):
                             vc.configtype = conftype
                         db.session.commit()
                         value = emi_file.read(2)
+                        print(value)
+                        print(convert_to_dec(binascii.hexlify(value)))
+                        print("------------------")
                         count = 1
                 except ValueError as e:
                     value = ''
+                    print("Import EMI error: ValueError encountered: ", e)
 
 
 '''

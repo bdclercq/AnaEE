@@ -61,9 +61,9 @@ def configure(timestmp=None):
         data = ValveConfiguration.query.filter_by(timestamp=timestamp).first()
         numbers = convert_data(data)
         return render_template('configure.html', timestamp=tmstmp, data=data, nrs=numbers, fatis=fs, valves=vs,
-                               valvenumbers=vn)
+                               valvenumbers=vn, nrvalves=valves)
     if not exists:
-        return render_template('configure.html', timestamp=tmstmp, fatis=fs, valves=vs, valvenumbers=vn)
+        return render_template('configure.html', timestamp=tmstmp, fatis=fs, valves=vs, valvenumbers=vn, nrvalves=valves)
 
 
 @app.route('/commit_config/<timestamp>', methods=['POST'])
