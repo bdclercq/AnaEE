@@ -5,6 +5,9 @@ import csv
 from app.models import ValveConfiguration
 from app import app, db
 
+fatis = 12
+valves = 12
+
 
 ##############################
 ### CHECK TIMESTAMPS
@@ -13,7 +16,7 @@ from app import app, db
 def check_stamp_lower(stamp, f, v):
     vcs = ValveConfiguration.query.filter_by(timestamp=stamp).all()
     for vc in vcs:
-        if vc.status[(f*8)+v] == '0':
+        if vc.status[(f*valves)+v] == '0':
             return True
     return False
 
@@ -21,7 +24,7 @@ def check_stamp_lower(stamp, f, v):
 def check_stamp_higher(stamp, f, v):
     vcs = ValveConfiguration.query.filter_by(timestamp=stamp).all()
     for vc in vcs:
-        if vc.status[(f*8)+v] == '1':
+        if vc.status[(f*valves)+v] == '1':
             return True
     return False
 
@@ -53,13 +56,13 @@ def check_overview(data, limits):
                     for stamp in data[k][f][v]['stamps']:
                         if check_stamp_lower(stamp, f, v):# and stamp not in problems['lower']:
                             problems['lower'].append(stamp)
-                            problems['lower_valves'].append((f*8)+v)
+                            problems['lower_valves'].append((f*valves)+v)
                 elif data[k][f][v]['run_time'] > limits['max_target']:
                     # get entries for this day
                     for stamp in data[k][f][v]['stamps']:
                         if check_stamp_higher(stamp, f, v):# and stamp not in problems['higher']:
                             problems['higher'].append(stamp)
-                            problems['higher_valves'].append((f * 8) + v)
+                            problems['higher_valves'].append((f * valves) + v)
     return problems
 
 
@@ -115,8 +118,10 @@ def export_data_emi(filename):
             f.write(binascii.unhexlify(convert_to_emi(stamp.second)))
             ### Add data
             data = conf.status
+            # j: bits that can be addressed
             j = 16
-            for i in range(6):
+            # 9*16 == 144 ( == valves*fatis)
+            for i in range(9):
                 # Convert each 16 bits to int
                 byte = data[j - 16:j]
                 ba = []
@@ -131,9 +136,9 @@ def export_data_emi(filename):
                 j = j + 16
             ### Add marking for begin or end
             f.write(binascii.unhexlify(convert_to_emi(conf.configtype)))
-            ### Fill row
-            for i in range(5):
-                f.write(binascii.unhexlify(convert_to_emi(0)))
+            # ### Fill row (row doesn't need to be filled anymore, the six 'free' slots have been filled)
+            # for i in range(6):
+            #     f.write(binascii.unhexlify(convert_to_emi(0)))
             ##
             f.write(binascii.unhexlify(convert_to_emi(0)))
         ##############################
@@ -206,9 +211,9 @@ def export_data(filename):
                 f.write('\n')
             ### Add data
             data = conf.status
-            j = 8
-            for i in range(int(len(data) / 8)):
-                byte = data[j - 8:j]
+            j = valves
+            for i in range(int(len(data) / valves)):
+                byte = data[j - valves:j]
                 ba = []
                 for it in range(len(byte)):
                     ba.append(int(byte[it]))
@@ -219,7 +224,7 @@ def export_data(filename):
                 f.write('\n')
                 f.write(str(conf.configtype))
                 f.write('\n')
-                j = j + 8
+                j = j + valves
             ### Fill row
             for i in range(3):
                 f.write(str(0))
@@ -276,8 +281,8 @@ def import_data_csv(filename, overwrite):
                         if not exists:
                             bs = ''
                             for i in range(11, 23):
-                                bs += "{0:08b}".format(int(record[keys[str(i)]]))
-                            bs += '0000000'
+                                bs += "{0:16b}".format(int(record[keys[str(i)]]))
+                            # bs += '0000000'
                             vc = ValveConfiguration(timestamp=timestamp, status=bs, configtype=int(record[keys[str(23)]]))
                             db.session.add(vc)
                             db.session.commit()
@@ -310,8 +315,8 @@ def import_data_csv(filename, overwrite):
                         if not exists:
                             bs = ''
                             for i in range(11, 23):
-                                bs += "{0:08b}".format(int(record[keys[str(i)]]))
-                            bs += '0000000'
+                                bs += "{0:16b}".format(int(record[keys[str(i)]]))
+                            # bs += '0000000'
                             vc = ValveConfiguration(timestamp=timestamp, status=bs, configtype=conftype)
                             db.session.add(vc)
                         if overwrite == "1":
@@ -328,21 +333,21 @@ def import_data_emi(filename, overwrite):
         count = 0
         #print(overwrite)
         with open(filename, mode='rb') as emi_file:
-            record = ["id", "year", "month", "day", "hour", "minute", "second", "f1-2", "f3-4", "f5-6", "f7-8", "f9-10",
-                      "f11-f12", "status"]
+            record = ["id", "year", "month", "day", "hour", "minute", "second", "f1", "f2", "f3", "f4", "f5", "f6",
+                      "f7", "f8", "f9", "f10", "f11", "f12", "status"]
             value = emi_file.read(2)
             while value != '':
                 try:
-                    # Only the first 13 values have meaning
-                    if count <= 13:
+                    # Only the first 20 values have meaning
+                    if count <= 19:
                         record[count] = convert_to_dec(binascii.hexlify(value))
                         value = emi_file.read(2)
                         count += 1
-                    elif 14 <= count < 19:
-                        # Contains only zero values
-                        value = emi_file.read(2)
-                        count += 1
-                    elif count == 19:
+                    # elif 14 <= count < 19:
+                    #     # Contains only zero values
+                    #     value = emi_file.read(2)
+                    #     count += 1
+                    elif count == 20:
                         # Read last zero
                         value = emi_file.read(2)
                         # Write record to db
@@ -352,10 +357,10 @@ def import_data_emi(filename, overwrite):
                         exists = db.session.query(ValveConfiguration.timestamp).filter_by(
                             timestamp=timestamp).scalar() is not None
                         bs = ''
-                        for i in range(7, 13):
+                        for i in range(7, 19):
                             bs += "{0:016b}".format(int(record[i]))
-                        bs += '0000000'
-                        conftype = int(record[13])
+                        # bs += '0000000'
+                        conftype = int(record[19])
                         # Skip existing entries
                         if not exists:
                             #print("Adding record with type {0}".format(conftype))
@@ -401,7 +406,7 @@ Converts the data so it can be stored in the database
 def convert_data(data):
     prev_checked = []
     data = data.status
-    for i in range(1, 97):
+    for i in range(1, (fatis*valves)+1):
         if int(data[i - 1]) == 1:
             prev_checked.append(i)
     return prev_checked

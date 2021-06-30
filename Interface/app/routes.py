@@ -12,8 +12,11 @@ fs = ['fati1', 'fati2', 'fati3', 'fati4', 'fati5', 'fati6', 'fati7', 'fati8',
       'fati9', 'fati10', 'fati11', 'fati12']
 vs = []
 vn = []
+fatis = 12
+valves = 12
 bs2 = ""
-for i in range(1, 97):
+# Add 12 valves for each of the 12 fatis
+for i in range(1, (fatis*valves)+1):
     name = "valve"
     name = name + str(i)
     vs.append(name)
@@ -78,7 +81,8 @@ def commit_config(timestamp):
                     checked_valves.append(int(result.getlist(v)[vi]))
         ##############################
         bs = ''
-        for i in range(1, 97):
+        # Check all 12 valves of each of the 12 fatis
+        for i in range(1, (fatis*valves)+1):
             if i in checked_valves:
                 bs = bs + '1'
             else:
@@ -299,17 +303,19 @@ def overview():
         status = conf.status
         time = getTime(stamp)
         stamp = datetime.datetime.combine(date, time)
-        for f in range(12):
+        # For each fati
+        for f in range(fatis):
             if f not in data[date].keys():
                 data[date][f] = {}
-            for v in range(8):
+            # For each valve
+            for v in range(valves):
                 if v not in data[date][f].keys():
                     data[date][f][v] = {}
                     data[date][f][v]['run_time'] = 0
                     data[date][f][v]['started_on'] = 0
                     data[date][f][v]['running'] = False
                     data[date][f][v]['stamps'] = []
-                if status[(f * 8) + v] == '0':
+                if status[(f * valves) + v] == '0':
                     if not data[date][f][v]['running']:
                         # Status of valve is 0, valve wasn't running: we don't have to record anything
                         pass
@@ -319,7 +325,7 @@ def overview():
                         data[date][f][v]['run_time'] += (stamp - data[date][f][v]['started_on']).seconds
                         data[date][f][v]['started_on'] = 0
                         data[date][f][v]['stamps'].append(init_stamp)
-                elif status[(f * 8) + v] == '1':
+                elif status[(f * valves) + v] == '1':
                     if not data[date][f][v]['running']:
                         # Valve was not running, status changed to 'on': turn on valve and update records
                         data[date][f][v]['running'] = True
