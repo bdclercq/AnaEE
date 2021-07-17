@@ -141,6 +141,8 @@ def export_data_emi(filename):
             #     f.write(binascii.unhexlify(convert_to_emi(0)))
             ##
             f.write(binascii.unhexlify(convert_to_emi(0)))
+            f.write(binascii.unhexlify(convert_to_emi(0)))
+            f.write(binascii.unhexlify(convert_to_emi(0)))
         ##############################
         f.close()
 
@@ -349,11 +351,11 @@ def import_data_emi(filename, overwrite):
                         record[count] = convert_to_dec(binascii.hexlify(value))
                         value = emi_file.read(2)
                         count += 1
-                    # elif 17 <= count < 18:
-                    #     # Contains only zero values
-                    #     value = emi_file.read(2)
-                    #     count += 1
-                    elif count == 17:
+                    elif 17 <= count < 19:
+                        # Contains only zero values
+                        value = emi_file.read(2)
+                        count += 1
+                    elif count == 19:
                         print(record)
                         # Read last zero
                         value = emi_file.read(2)
