@@ -119,11 +119,12 @@ def export_data_emi(filename):
             ### Add data
             data = conf.status
             # j: bits that can be addressed
-            j = 16
-            # 9*16 == 144 ( == valves*fatis)
-            for i in range(9):
+            j = 12
+            # 12*12 == 144 ( == valves*fatis)
+            for i in range(12):
                 # Convert each 16 bits to int
-                byte = data[j - 16:j]
+                byte = data[j - 12:j]
+                byte += '0000'
                 ba = []
                 for it in range(len(byte)):
                     ba.append(int(byte[it]))
@@ -133,7 +134,7 @@ def export_data_emi(filename):
                     value = (value << 1) | bit
                 # Convert int to hex
                 f.write(binascii.unhexlify(convert_to_emi(value)))
-                j = j + 16
+                j = j + 12
             ### Add marking for begin or end
             f.write(binascii.unhexlify(convert_to_emi(conf.configtype)))
             # ### Fill row (row doesn't need to be filled anymore, the six 'free' slots have been filled)
@@ -348,7 +349,8 @@ def import_data_emi(filename, overwrite):
                     # print(convert_to_dec(binascii.hexlify(value)))
                     # Only the first 16 values have meaning
                     if count <= 16:
-                        record[count] = convert_to_dec(binascii.hexlify(value))
+                        valve = convert_to_dec(binascii.hexlify(value))
+                        record[count] = valve[:12]
                         value = emi_file.read(2)
                         count += 1
                     elif 17 <= count < 19:
