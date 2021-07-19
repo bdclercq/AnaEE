@@ -350,14 +350,14 @@ def import_data_emi(filename, overwrite):
                     # Only the first 16 values have meaning
                     if count <= 16:
                         valve = convert_to_dec(binascii.hexlify(value))
-                        record[count] = valve[:12]
+                        record[count] = valve
                         value = emi_file.read(2)
                         count += 1
-                    elif 17 <= count < 19:
+                    elif 17 <= count < 22:
                         # Contains only zero values
                         value = emi_file.read(2)
                         count += 1
-                    elif count == 19:
+                    elif count == 22:
                         print(record)
                         # Read last zero
                         value = emi_file.read(2)
