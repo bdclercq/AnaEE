@@ -141,9 +141,9 @@ def export_data_emi(filename):
             # for i in range(6):
             #     f.write(binascii.unhexlify(convert_to_emi(0)))
             ##
-            f.write(binascii.unhexlify(convert_to_emi(0)))
-            f.write(binascii.unhexlify(convert_to_emi(0)))
-            f.write(binascii.unhexlify(convert_to_emi(0)))
+            #f.write(binascii.unhexlify(convert_to_emi(0)))
+            #f.write(binascii.unhexlify(convert_to_emi(0)))
+            #f.write(binascii.unhexlify(convert_to_emi(0)))
         ##############################
         f.close()
 
@@ -353,11 +353,11 @@ def import_data_emi(filename, overwrite):
                         record[count] = valve
                         value = emi_file.read(2)
                         count += 1
-                    elif 17 <= count < 22:
+                    elif 17 <= count < 19:
                         # Contains only zero values
                         value = emi_file.read(2)
                         count += 1
-                    elif count == 22:
+                    elif count == 19:
                         print(record)
                         # Read last zero
                         value = emi_file.read(2)
