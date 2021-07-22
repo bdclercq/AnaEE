@@ -136,12 +136,12 @@ def export_data_emi(filename):
                 f.write(binascii.unhexlify(convert_to_emi(value)))
                 j = j + 12
             ### Add marking for begin or end
-            f.write(binascii.unhexlify(convert_to_emi(conf.configtype)))
+            #f.write(binascii.unhexlify(convert_to_emi(conf.configtype)))
             # ### Fill row (row doesn't need to be filled anymore, the six 'free' slots have been filled)
             # for i in range(6):
             #     f.write(binascii.unhexlify(convert_to_emi(0)))
             ##
-            #f.write(binascii.unhexlify(convert_to_emi(0)))
+            f.write(binascii.unhexlify(convert_to_emi(0)))
             #f.write(binascii.unhexlify(convert_to_emi(0)))
             #f.write(binascii.unhexlify(convert_to_emi(0)))
         ##############################
