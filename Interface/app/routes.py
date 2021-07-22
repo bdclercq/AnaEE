@@ -175,7 +175,7 @@ def importemi():
                          universal_newlines=True)
     out, err = p.communicate()
     import_data_emi(out.strip(), overwrite)
-    return redirect("/")
+    return redirect("/performcheck")
 
 
 ##############################
