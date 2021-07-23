@@ -130,11 +130,17 @@ def export_data_emi(filename):
             # 12*12 == 144 ( == valves*fatis)
             for i in range(12):
                 # Convert each 16 bits to int
-                byte = flipbits(data[j - 12:j])
+                byte = data[j - 12:j]
                 byte += '0000'
                 ba = []
                 for it in range(len(byte)):
                     ba.append(int(byte[it]))
+                b1 = ba[:8]     ## ba is bitlijst
+                b2 = ba[8:]
+                b1.reverse
+                b2.reverse
+                ba = b1
+                ba =+ b2
                 value = 0
                 print(ba)
                 for bit in ba:
