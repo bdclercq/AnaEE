@@ -83,7 +83,7 @@ def convert_to_dec(inv):
 
 
 def flipbits(x):
-    """reverse bits in a byte"""
+    #reverse bits in a byte#
     x1 = x << 4 | x >4
     x2 = (x1 & 51) << 2 | (x1 & 204) >2
     return (x2 & 85) << 1 | (x2 & 170) >1
