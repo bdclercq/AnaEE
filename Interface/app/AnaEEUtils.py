@@ -82,6 +82,13 @@ def convert_to_dec(inv):
     return dec_val
 
 
+def flipbits(x):
+"""reverse bits in a byte"""
+x1 = x << 4 | x >4
+x2 = (x1 & 51) << 2 | (x1 & 204) >2
+return (x2 & 85) << 1 | (x2 & 170) >1
+
+
 ##############################
 ### EXPORT DATABASE
 ##############################
@@ -123,7 +130,7 @@ def export_data_emi(filename):
             # 12*12 == 144 ( == valves*fatis)
             for i in range(12):
                 # Convert each 16 bits to int
-                byte = data[j - 12:j]
+                byte = flipbits(data[j - 12:j])
                 byte += '0000'
                 ba = []
                 for it in range(len(byte)):
