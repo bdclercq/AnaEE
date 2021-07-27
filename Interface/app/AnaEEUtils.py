@@ -82,12 +82,6 @@ def convert_to_dec(inv):
     return dec_val
 
 
-def flipbits(x):
-    """reverse bits in a byte"""
-    x1 = x << 4 | x >4
-    x2 = (x1 & 51) << 2 | (x1 & 204) >2
-    return (x2 & 85) << 1 | (x2 & 170) >1
-
 
 ##############################
 ### EXPORT DATABASE
@@ -140,7 +134,7 @@ def export_data_emi(filename):
                 b1.reverse()
                 b2.reverse()
                 ba = b1
-                ba =+ b2
+                ba += b2
                 value = 0
                 print(ba)
                 for bit in ba:
