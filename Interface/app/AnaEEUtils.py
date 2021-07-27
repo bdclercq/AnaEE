@@ -119,6 +119,7 @@ def export_data_emi(filename):
             f.write(binascii.unhexlify(convert_to_emi(stamp.second)))
             ### Add data
             data = conf.status
+            print(data)
             # j: bits that can be addressed
             j = 12
             # 12*12 == 144 ( == valves*fatis)
@@ -133,13 +134,14 @@ def export_data_emi(filename):
                 b2 = ba[8:]
                 b1.reverse()
                 b2.reverse()
-                ba = b1
-                ba += b2
+                ba = b2[:]
+                ba += b1
                 value = 0
                 print(ba)
                 for bit in ba:
                     value = (value << 1) | bit
                 # Convert int to hex
+                print(value)
                 f.write(binascii.unhexlify(convert_to_emi(value)))
                 j = j + 12
             ### Add marking for begin or end
@@ -348,23 +350,23 @@ def import_data_emi(filename, overwrite):
         #print(overwrite)
         with open(filename, mode='rb') as emi_file:
             record = ["id", "year", "month", "day", "hour", "minute", "second", "f1", "f2", "f3", "f4", "f5", "f6",
-                      "f7", "f8", "f9", "status"]
+                      "f7", "f8", "f9", "10", "f11", "f12", "status"]
             value = emi_file.read(2)
             while value != '':
                 try:
                     # print(value)
                     # print(convert_to_dec(binascii.hexlify(value)))
                     # Only the first 16 values have meaning
-                    if count <= 16:
+                    if count <= 19:
                         valve = convert_to_dec(binascii.hexlify(value))
                         record[count] = valve
                         value = emi_file.read(2)
                         count += 1
-                    elif 17 <= count < 19:
-                        # Contains only zero values
-                        value = emi_file.read(2)
-                        count += 1
-                    elif count == 19:
+                    # elif 20 <= count < 22:
+                    #     # Contains only zero values
+                    #     value = emi_file.read(2)
+                    #     count += 1
+                    elif count == 20:
                         print(record)
                         # Read last zero
                         value = emi_file.read(2)
@@ -376,11 +378,22 @@ def import_data_emi(filename, overwrite):
                             timestamp=timestamp).scalar() is not None
                         bs = ''
                         # 144 (12 fatis * 12 valves) divided by 16 (bits) equals 9
-                        for i in range(7, 16):
-                            bs += "{0:016b}".format(int(record[i]))
+                        for i in range(7, 19):
+                            rs = "{0:016b}".format(int(record[i]))
+                            print(rs)
+                            ba = [int(b) for b in rs]
+                            bs1 = ba[:8]
+                            bs2 = ba[8:]
+                            bs1.reverse()
+                            bs2.reverse()
+                            ba = bs2[:]
+                            ba += bs1
+                            for b in ba[:12]:
+                                bs += "{0}".format(b)
                         # bs += '0000000'
                         conftype = int(record[16])
                         print(bs)
+                        print(len(bs))
                         # Skip existing entries
                         if not exists:
                             #print("Adding record with type {0}".format(conftype))
@@ -391,9 +404,9 @@ def import_data_emi(filename, overwrite):
                             vc.status = bs
                             vc.configtype = conftype
                         db.session.commit()
-                        value = emi_file.read(2)
-                        print(value)
-                        print(convert_to_dec(binascii.hexlify(value)))
+                        # value = emi_file.read(2)
+                        # print(value)
+                        # print(convert_to_dec(binascii.hexlify(value)))
                         print("------------------")
                         count = 1
                 except ValueError as e:
